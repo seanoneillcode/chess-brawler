@@ -10,7 +10,7 @@ class Constants {
     static final String RED = "red";
     static final String BLUE = "blue";
     static final float GAME_SPEED = 0.25f;
-    static final int SHAKE_AMOUNT = 4;
+    static final float SHAKE_AMOUNT = 0.5f;
     static final String PLAYING_GAME = "playing-game";
     static final String GAME_WON = "game-won";
     static final String GAME_SELECT = "game-select";

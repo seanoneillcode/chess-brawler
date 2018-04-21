@@ -22,6 +22,7 @@ public class LoadingManager {
     static final String BISHOP_IDLE = "bishop-idle.png";
     static final String QUEEN_IDLE = "queen-idle.png";
     static final String KING_IDLE = "king-idle.png";
+    static final String EXPLOSION = "explosion.png";
     static final String TILE = "tile.png";
     static final String TILE_ACTIVE = "tile-active.png";
     static final String TILE_TAKING = "tile-taking.png";
@@ -49,6 +50,7 @@ public class LoadingManager {
         assetManager.load(TILE_ACTIVE, Texture.class);
         assetManager.load(TILE_TAKING, Texture.class);
         assetManager.load(CURSOR, Texture.class);
+        assetManager.load(EXPLOSION, Texture.class);
         assetManager.finishLoading();
         processAnimation(PAWN_IDLE, 1, 1f);
         processAnimation(CASTLE_IDLE, 1, 1f);
@@ -60,6 +62,7 @@ public class LoadingManager {
         processAnimation(TILE_ACTIVE, 1, 1f);
         processAnimation(TILE_TAKING, 1, 1f);
         processAnimation(CURSOR, 1, 1f);
+        processAnimation(EXPLOSION, 8, 0.08f);
     }
 
     public Animation<TextureRegion> getAnimation(String name) {

@@ -27,9 +27,13 @@ public class PieceManager {
     void start() {
         pieces = new ArrayList<>();
         legalMoves = new ArrayList<>();
+        selectedPiece = null;
     }
 
     void update(ChessBrawler context) {
+        if (!context.screen.equals(PLAYING_GAME)) {
+            return;
+        }
         if (context.inputManager.justClicked) {
             if (selectedPiece != null) {
                 for (Move move : legalMoves) {
@@ -53,21 +57,35 @@ public class PieceManager {
             legalMoves = generateMoves(selectedPiece);
         }
         for (Piece piece : pieces) {
+            boolean moving = false;
+            boolean moved = false;
             if (piece.moveTimer > 0) {
-                piece.moveTimer = piece.moveTimer - Gdx.graphics.getDeltaTime();
+                moving = true;
+            }
+            piece.moveTimer = piece.moveTimer - Gdx.graphics.getDeltaTime();
+            if (moving) {
                 if (piece.moveTimer < 0) {
+                    moved = true;
                     piece.mov = new Vector2();
                     piece.pos = new Vector2(MathUtils.round(piece.pos.x / TILE_SIZE) * TILE_SIZE, MathUtils.round(piece.pos.y / TILE_SIZE) * TILE_SIZE);
                 }
                 piece.pos.add(piece.mov);
             }
-            for (Piece other : pieces) {
-                if (piece != other && isSameTile(piece, other) && piece.state != Piece.State.DEAD && piece.moveTimer <= 0 && other.moveTimer <= 0) {
-                    other.state = Piece.State.DEAD;
-                    context.screenShaker.shake(SHAKE_AMOUNT);
-                    if (other.type == KING) {
-                        context.gameWinner = piece.owner;
-                        context.changeScreen(GAME_WON);
+            if (moved) {
+                for (Piece other : pieces) {
+                    if (piece != other && isSameTile(piece, other) && piece.state != Piece.State.DEAD) {
+//                    if (other.moveTimer < 0) {
+//                        other.isLocked = true;
+//                    }
+                        if (piece.moveTimer <= 0 && other.moveTimer <= 0) {
+                            other.isLocked = false;
+                            other.state = Piece.State.DEAD;
+                            context.screenShaker.shake(SHAKE_AMOUNT);
+                            if (other.type == KING) {
+                                context.gameWinner = piece.owner;
+                                context.changeScreen(GAME_WON);
+                            }
+                        }
                     }
                 }
             }
@@ -89,7 +107,7 @@ public class PieceManager {
     public void movePiece(Piece selectedPiece, Move move) {
         Piece targetPiece = getPieceAt(move.x, move.y);
         if (targetPiece != null) {
-            targetPiece.isLocked = true;
+            targetPiece.isLocked = false;
         }
         Vector2 target = new Vector2(move.x, move.y).scl(TILE_SIZE);
         Vector2 mov = target.cpy().sub(selectedPiece.pos);
@@ -136,11 +154,11 @@ public class PieceManager {
             }
             Piece leftAtt = getTakingPieceAt(xpos - 1, ypos + ydir);
             if (leftAtt != null && isEnemy(piece, leftAtt)) {
-                moves.add(new Move(xpos - 1, ypos + ydir, true));
+                moves.add(new Move(xpos - 1, ypos + ydir, true, leftAtt.type.value));
             }
             Piece rightAtt = getTakingPieceAt(xpos + 1, ypos + ydir);
             if (rightAtt != null && isEnemy(piece, rightAtt)) {
-                moves.add(new Move(xpos + 1, ypos + ydir, true));
+                moves.add(new Move(xpos + 1, ypos + ydir, true, rightAtt.type.value));
             }
         }
         if (piece.type == CASTLE || piece.type == QUEEN) {
@@ -150,7 +168,7 @@ public class PieceManager {
                 } else {
                     Piece attPiece = getTakingPieceAt(i, ypos);
                     if (attPiece != null && isEnemy(piece, attPiece)) {
-                        moves.add(new Move(i, ypos, true));
+                        moves.add(new Move(i, ypos, true, attPiece.type.value));
                     }
                     break;
                 }
@@ -161,7 +179,7 @@ public class PieceManager {
                 } else {
                     Piece attPiece = getTakingPieceAt(i, ypos);
                     if (attPiece != null && isEnemy(piece, attPiece)) {
-                        moves.add(new Move(i, ypos, true));
+                        moves.add(new Move(i, ypos, true, attPiece.type.value));
                     }
                     break;
                 }
@@ -172,7 +190,7 @@ public class PieceManager {
                 } else {
                     Piece attPiece = getTakingPieceAt(xpos, i);
                     if (attPiece != null && isEnemy(piece, attPiece)) {
-                        moves.add(new Move(xpos, i, true));
+                        moves.add(new Move(xpos, i, true, attPiece.type.value));
                     }
                     break;
                 }
@@ -183,7 +201,7 @@ public class PieceManager {
                 } else {
                     Piece attPiece = getTakingPieceAt(xpos, i);
                     if (attPiece != null && isEnemy(piece, attPiece)) {
-                        moves.add(new Move(xpos, i, true));
+                        moves.add(new Move(xpos, i, true, attPiece.type.value));
                     }
                     break;
                 }
@@ -196,7 +214,7 @@ public class PieceManager {
                 } else {
                     Piece attPiece = getTakingPieceAt(i, j);
                     if (attPiece != null && isEnemy(piece, attPiece)) {
-                        moves.add(new Move(i, j, true));
+                        moves.add(new Move(i, j, true, attPiece.type.value));
                     }
                     break;
                 }
@@ -207,7 +225,7 @@ public class PieceManager {
                 } else {
                     Piece attPiece = getTakingPieceAt(i, j);
                     if (attPiece != null && isEnemy(piece, attPiece)) {
-                        moves.add(new Move(i, j, true));
+                        moves.add(new Move(i, j, true, attPiece.type.value));
                     }
                     break;
                 }
@@ -218,7 +236,7 @@ public class PieceManager {
                 } else {
                     Piece attPiece = getTakingPieceAt(i, j);
                     if (attPiece != null && isEnemy(piece, attPiece)) {
-                        moves.add(new Move(i, j, true));
+                        moves.add(new Move(i, j, true, attPiece.type.value));
                     }
                     break;
                 }
@@ -229,7 +247,7 @@ public class PieceManager {
                 } else {
                     Piece attPiece = getTakingPieceAt(j, i);
                     if (attPiece != null && isEnemy(piece, attPiece)) {
-                        moves.add(new Move(j, i, true));
+                        moves.add(new Move(j, i, true, attPiece.type.value));
                     }
                     break;
                 }
@@ -268,6 +286,7 @@ public class PieceManager {
                 }
             }
         }
+        moves.removeIf(move -> move.y < 0 || move.y > 7);
         return moves;
     }
 
@@ -280,7 +299,7 @@ public class PieceManager {
         } else {
             Piece attPiece = getTakingPieceAt(tx, ty);
             if (attPiece != null && isEnemy(piece, attPiece)) {
-                return new Move(tx, ty, true);
+                return new Move(tx, ty, true, attPiece.type.value);
             }
         }
         return null;

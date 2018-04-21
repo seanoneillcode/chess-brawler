@@ -26,6 +26,7 @@ public class ChessBrawler extends ApplicationAdapter {
 	ScreenShaker screenShaker;
 	TextManager textManager;
 	AiPlayer aiPlayer;
+    EffectsManager effectsManager;
     private float timer = 0;
     public String playerOwner = RED;
     public String aiOwner = BLUE;
@@ -44,8 +45,9 @@ public class ChessBrawler extends ApplicationAdapter {
         boardManager = new BoardManager();
         screenShaker = new ScreenShaker();
         textManager = new TextManager();
+        effectsManager = new EffectsManager();
         pieceOffset = new Vector2(4, 0);
-        aiPlayer = new AiPlayer(aiOwner, 0);
+        aiPlayer = new AiPlayer(aiOwner, 2);
 		batch = new SpriteBatch();
 		loadingManager.load();
 		isTesting = false;
@@ -55,10 +57,15 @@ public class ChessBrawler extends ApplicationAdapter {
 
 	void changeScreen(String screen) {
         screenTimer = 4.0f;
+        if (screen.equals(GAME_WON)) {
+            effectsManager.blowUpPlayer(gameWinner.equals(RED) ? BLUE : RED, this);
+        }
         this.screen = screen;
+
     }
 
 	void startGame() {
+        inputManager.start();
         pieceManager.start();
         gameWinner = null;
 		boardManager.createPieces(this);
@@ -67,7 +74,7 @@ public class ChessBrawler extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-        update();
+        effectsManager.update();
         inputManager.update(this);
         if (screen.equals(PLAYING_GAME)) {
             pieceManager.update(this);
@@ -75,12 +82,14 @@ public class ChessBrawler extends ApplicationAdapter {
         aiPlayer.update(this);
         screenShaker.update();
         cameraManager.update(this);
+        update();
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
         batch.setProjectionMatrix(cameraManager.camera.combined);
         drawLevel();
         drawPieces();
+        drawEffects();
         drawText();
 		batch.end();
 	}
@@ -97,6 +106,7 @@ public class ChessBrawler extends ApplicationAdapter {
         }
     }
 
+
     private void drawText() {
         if (screen.equals(GAME_WON)) {
             String msg = playerOwner.equals(gameWinner) ? "You win!" : "You lose!";
@@ -106,6 +116,20 @@ public class ChessBrawler extends ApplicationAdapter {
         if (screen.equals(PLAYING_GAME)) {
             if (screenTimer > 0) {
                 textManager.drawText(batch, "FIGHT!", new Vector2(40, 104));
+            }
+        }
+    }
+
+    private void drawEffects() {
+        Sprite sprite = new Sprite();
+        for (Effect effect : effectsManager.effects) {
+            if (effect.offsetTimer < 0) {
+                TextureRegion region = loadingManager.getAnimation(effect.image).getKeyFrame(effect.animTimer, true);
+                sprite.setSize(region.getRegionWidth(), region.getRegionHeight());
+                sprite.setPosition(effect.pos.y - (region.getRegionWidth() / 2.0f) + pieceOffset.y,
+                        effect.pos.x - (region.getRegionHeight() / 2.0f) + pieceOffset.x);
+                sprite.setRegion(region);
+                sprite.draw(batch);
             }
         }
     }

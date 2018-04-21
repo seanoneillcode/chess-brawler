@@ -13,6 +13,10 @@ public class InputManager {
     private boolean clickLock = false;
     boolean justClicked = false;
 
+    void start() {
+        justClicked = false;
+        clickLock = false;
+    }
 
     void update(ChessBrawler context) {
         mouseInWorld3D.x = Gdx.input.getX();
