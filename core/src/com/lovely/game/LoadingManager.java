@@ -17,6 +17,8 @@ import java.util.Map;
 public class LoadingManager {
 
     static final String PAWN_IDLE = "pawn-idle.png";
+    static final String PAWN_WALK = "pawn-walk.png";
+    static final String PAWN_DIE = "pawn-die.png";
     static final String CASTLE_IDLE = "castle-idle.png";
     static final String KNIGHT_IDLE = "knight-idle.png";
     static final String BISHOP_IDLE = "bishop-idle.png";
@@ -47,6 +49,8 @@ public class LoadingManager {
 
     void load() {
         assetManager.load(PAWN_IDLE, Texture.class);
+        assetManager.load(PAWN_WALK, Texture.class);
+        assetManager.load(PAWN_DIE, Texture.class);
         assetManager.load(CASTLE_IDLE, Texture.class);
         assetManager.load(KNIGHT_IDLE, Texture.class);
         assetManager.load(BISHOP_IDLE, Texture.class);
@@ -65,7 +69,9 @@ public class LoadingManager {
         assetManager.load(MUSIC_WIN, Sound.class);
 
         assetManager.finishLoading();
-        processAnimation(PAWN_IDLE, 1, 1f);
+        processAnimation(PAWN_IDLE, 4, 0.25f);
+        processAnimation(PAWN_WALK, 4, 0.25f);
+        processAnimation(PAWN_DIE, 4, 0.25f);
         processAnimation(CASTLE_IDLE, 1, 1f);
         processAnimation(KNIGHT_IDLE, 1, 1f);
         processAnimation(BISHOP_IDLE, 1, 1f);

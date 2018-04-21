@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.lovely.game.Constants.*;
@@ -59,10 +60,13 @@ public class PieceManager {
         for (Piece piece : pieces) {
             boolean moving = false;
             boolean moved = false;
+            piece.animState = Piece.AnimState.IDLE;
             if (piece.moveTimer > 0) {
                 moving = true;
+                piece.animState = Piece.AnimState.WALK;
             }
             piece.moveTimer = piece.moveTimer - Gdx.graphics.getDeltaTime();
+            piece.animTimer = piece.animTimer + Gdx.graphics.getDeltaTime();
             if (moving) {
                 if (piece.moveTimer < 0) {
                     moved = true;
@@ -71,30 +75,32 @@ public class PieceManager {
                 }
                 piece.pos.add(piece.mov);
             }
-            if (moved) {
+            if (moved && piece.state == Piece.State.ALIVE) {
                 for (Piece other : pieces) {
-                    if (piece != other && isSameTile(piece, other) && piece.state != Piece.State.DEAD) {
-//                    if (other.moveTimer < 0) {
-//                        other.isLocked = true;
-//                    }
-                        //if (piece.moveTimer <= 0 && other.moveTimer <= 0) {
-                            other.isLocked = false;
-                            other.state = Piece.State.DEAD;
-                            context.screenShaker.shake(SHAKE_AMOUNT);
-                            if (other.type == KING) {
-                                context.gameWinner = piece.owner;
-                                context.changeScreen(GAME_WON);
-                            }
-                        //}
+                    if (piece != other && isSameTile(piece, other)) {
+                        other.state = Piece.State.DYING;
+                        other.animTimer = 0;
+                    }
+                }
+            }
+            if (piece.state == Piece.State.DYING) {
+                piece.animState = Piece.AnimState.DIE;
+                piece.dieTimer = piece.dieTimer - Gdx.graphics.getDeltaTime();
+                if (piece.dieTimer < 0) {
+                    piece.state = Piece.State.DEAD;
+                    if (piece.type == KING) {
+                        context.gameWinner = piece.owner;
+                        context.changeScreen(GAME_WON);
                     }
                 }
             }
         }
         pieces.removeIf(p -> p.state == Piece.State.DEAD);
+        pieces.sort((o1, o2) -> (int)(o1.pos.y - o2.pos.y));
     }
 
     private boolean canSelectPiece(Piece piece, ChessBrawler context) {
-        if (!piece.owner.equals(context.playerOwner) && !context.isTesting) {
+        if (!piece.owner.equals(context.playerOwner) && !context.isTesting && piece.state == Piece.State.ALIVE) {
             return false;
         }
         return !piece.isLocked;
@@ -113,6 +119,8 @@ public class PieceManager {
         Vector2 mov = target.cpy().sub(selectedPiece.pos);
         selectedPiece.mov = mov.cpy().nor().scl(GAME_SPEED);
         selectedPiece.moveTimer = ((mov.len() * GAME_PIECE_TIME_SPEED) / TILE_SIZE );
+        selectedPiece.animTimer = 0;
+        selectedPiece.animState = Piece.AnimState.WALK;
     }
 
     boolean isSameTile(Piece piece, Piece other) {

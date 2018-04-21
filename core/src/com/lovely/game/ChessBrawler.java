@@ -4,7 +4,6 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static com.lovely.game.Constants.*;
@@ -145,15 +143,26 @@ public class ChessBrawler extends ApplicationAdapter {
     private void drawPieces() {
         Sprite sprite = new Sprite();
         for (Piece piece : pieceManager.pieces) {
+
             sprite.setColor(piece.owner.equals(RED) ? (new Color(1.0f, 1.0f, 1.0f, 1.0f)) : (new Color(0.0f, 1.0f, 1.0f, 1.0f)));
             if (pieceManager.selectedPiece != null && pieceManager.selectedPiece == piece) {
                 sprite.setColor(new Color(0.5f, 1.0f, 0.5f, 1f));
             }
-            TextureRegion region = loadingManager.getAnimation(piece.image).getKeyFrame(timer, true);
+            String image = piece.idleImage;
+            if (piece.animState == Piece.AnimState.WALK) {
+                image = piece.walkImage;
+            }
+            if (piece.animState == Piece.AnimState.DIE) {
+                image = piece.dieImage;
+            }
+            TextureRegion region = loadingManager.getAnimation(image).getKeyFrame(piece.animTimer, true);
             sprite.setSize(region.getRegionWidth(), region.getRegionHeight());
             sprite.setPosition(piece.pos.y - (region.getRegionWidth() / 2.0f) + pieceOffset.y,
                     piece.pos.x - (region.getRegionHeight() / 2.0f) + pieceOffset.x);
             sprite.setRegion(region);
+            if (!piece.owner.equals(playerOwner)) {
+                sprite.flip(true, false);
+            }
             sprite.draw(batch);
         }
     }
