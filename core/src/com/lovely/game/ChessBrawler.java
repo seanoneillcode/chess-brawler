@@ -6,28 +6,43 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import static com.lovely.game.LoadingManager.TILE;
+
 public class ChessBrawler extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
-	
-	@Override
+    private static final float TILE_SIZE = 16f;
+    private static final float HALF_TILE_SIZE = TILE_SIZE / 2.0f;
+
+    SpriteBatch batch;
+	LoadingManager loadingManager;
+    private float timer = 0;
+
+    @Override
 	public void create () {
+		loadingManager = new LoadingManager();
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		loadingManager.load();
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		batch.draw(img, 0, 0);
+        drawLevel();
 		batch.end();
 	}
-	
+
+	private void drawLevel() {
+	    for (int x = 0; x < 8; x++) {
+	        for (int y = 0; y < 8; y++) {
+	            batch.draw(loadingManager.getAnimation(TILE).getKeyFrame(timer), (x * TILE_SIZE) - HALF_TILE_SIZE, (y *  TILE_SIZE) - HALF_TILE_SIZE);
+            }
+        }
+    }
+
 	@Override
 	public void dispose () {
 		batch.dispose();
-		img.dispose();
+		loadingManager.dispose();
 	}
 }
