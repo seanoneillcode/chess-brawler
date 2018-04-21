@@ -77,7 +77,7 @@ public class PieceManager {
 //                    if (other.moveTimer < 0) {
 //                        other.isLocked = true;
 //                    }
-                        if (piece.moveTimer <= 0 && other.moveTimer <= 0) {
+                        //if (piece.moveTimer <= 0 && other.moveTimer <= 0) {
                             other.isLocked = false;
                             other.state = Piece.State.DEAD;
                             context.screenShaker.shake(SHAKE_AMOUNT);
@@ -85,7 +85,7 @@ public class PieceManager {
                                 context.gameWinner = piece.owner;
                                 context.changeScreen(GAME_WON);
                             }
-                        }
+                        //}
                     }
                 }
             }
@@ -97,7 +97,7 @@ public class PieceManager {
         if (!piece.owner.equals(context.playerOwner) && !context.isTesting) {
             return false;
         }
-        return piece.moveTimer <= 0 && !piece.isLocked;
+        return !piece.isLocked;
     }
 
     private boolean isEnemy(Piece piece, Piece other) {
@@ -112,7 +112,7 @@ public class PieceManager {
         Vector2 target = new Vector2(move.x, move.y).scl(TILE_SIZE);
         Vector2 mov = target.cpy().sub(selectedPiece.pos);
         selectedPiece.mov = mov.cpy().nor().scl(GAME_SPEED);
-        selectedPiece.moveTimer = (mov.len() / TILE_SIZE);
+        selectedPiece.moveTimer = ((mov.len() * GAME_PIECE_TIME_SPEED) / TILE_SIZE );
     }
 
     boolean isSameTile(Piece piece, Piece other) {
@@ -140,7 +140,7 @@ public class PieceManager {
 
     Piece getTakingPieceAt(int x, int y) {
         Piece piece = getPieceAt(x, y);
-        return piece != null && piece.moveTimer <= 0 ? piece : null;
+        return piece != null  ? piece : null; // && piece.moveTimer <= 0
     }
 
     List<Move> generateMoves(Piece piece) {

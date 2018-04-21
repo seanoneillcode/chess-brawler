@@ -8,12 +8,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import static com.lovely.game.Constants.*;
-import static com.lovely.game.LoadingManager.TILE;
-import static com.lovely.game.LoadingManager.TILE_ACTIVE;
-import static com.lovely.game.LoadingManager.TILE_TAKING;
+import static com.lovely.game.LoadingManager.*;
 
 public class ChessBrawler extends ApplicationAdapter {
 
@@ -27,6 +30,7 @@ public class ChessBrawler extends ApplicationAdapter {
 	TextManager textManager;
 	AiPlayer aiPlayer;
     EffectsManager effectsManager;
+    SoundManager soundManager;
     private float timer = 0;
     public String playerOwner = RED;
     public String aiOwner = BLUE;
@@ -35,6 +39,7 @@ public class ChessBrawler extends ApplicationAdapter {
     String gameWinner;
     String screen;
     float screenTimer = 0;
+    private boolean waitingForContinue = false;
 
     @Override
 	public void create () {
@@ -46,6 +51,7 @@ public class ChessBrawler extends ApplicationAdapter {
         screenShaker = new ScreenShaker();
         textManager = new TextManager();
         effectsManager = new EffectsManager();
+        soundManager = new SoundManager();
         pieceOffset = new Vector2(4, 0);
         aiPlayer = new AiPlayer(aiOwner, 2);
 		batch = new SpriteBatch();
@@ -56,20 +62,25 @@ public class ChessBrawler extends ApplicationAdapter {
 	}
 
 	void changeScreen(String screen) {
-        screenTimer = 4.0f;
+        waitingForContinue = true;
         if (screen.equals(GAME_WON)) {
             effectsManager.blowUpPlayer(gameWinner.equals(RED) ? BLUE : RED, this);
+            String winLose = gameWinner.equals(RED) ? MUSIC_WIN : MUSIC_FAIL;
+            soundManager.playMusic(winLose, this, false);
         }
         this.screen = screen;
 
     }
 
 	void startGame() {
+        waitingForContinue = false;
         inputManager.start();
         pieceManager.start();
         gameWinner = null;
 		boardManager.createPieces(this);
 		screenTimer = 1f;
+		List<String> fightSongs = Arrays.asList(MUSIC_FIGHT_0, MUSIC_FIGHT_1, MUSIC_FIGHT_2);
+        soundManager.playMusic(fightSongs.get(MathUtils.random(fightSongs.size() - 1)), this, true);
     }
 
 	@Override
@@ -95,13 +106,10 @@ public class ChessBrawler extends ApplicationAdapter {
 	}
 
 	void update() {
-        if (screenTimer > 0) {
-            screenTimer = screenTimer - Gdx.graphics.getDeltaTime();
-            if (screenTimer <= 0) {
-                if (screen.equals(GAME_WON)) {
-                    screen = PLAYING_GAME;
-                    startGame();
-                }
+        if (screen.equals(GAME_WON)) {
+            if (waitingForContinue && inputManager.justClicked) {
+                screen = PLAYING_GAME;
+                startGame();
             }
         }
     }
@@ -111,10 +119,10 @@ public class ChessBrawler extends ApplicationAdapter {
         if (screen.equals(GAME_WON)) {
             String msg = playerOwner.equals(gameWinner) ? "You win!" : "You lose!";
             textManager.drawText(batch, msg, new Vector2(40, 104));
-            textManager.drawText(batch, "" + (int)screenTimer, new Vector2(52, 68));
+            textManager.drawText(batch, "(click to play again)", new Vector2(12, 68));
         }
         if (screen.equals(PLAYING_GAME)) {
-            if (screenTimer > 0) {
+            if (waitingForContinue) {
                 textManager.drawText(batch, "FIGHT!", new Vector2(40, 104));
             }
         }

@@ -28,6 +28,12 @@ public class LoadingManager {
     static final String TILE_TAKING = "tile-taking.png";
     static final String CURSOR = "cursor.png";
 
+    static final String MUSIC_FIGHT_0 = "sound/fight-0.ogg";
+    static final String MUSIC_FIGHT_1 = "sound/fight-1.ogg";
+    static final String MUSIC_FIGHT_2 = "sound/fight-3.ogg";
+    static final String MUSIC_FAIL = "sound/fail.ogg";
+    static final String MUSIC_WIN = "sound/win.ogg";
+
     private Map<String, Animation<TextureRegion>> anims;
     private AssetManager assetManager;
 
@@ -51,6 +57,13 @@ public class LoadingManager {
         assetManager.load(TILE_TAKING, Texture.class);
         assetManager.load(CURSOR, Texture.class);
         assetManager.load(EXPLOSION, Texture.class);
+
+        assetManager.load(MUSIC_FIGHT_0, Sound.class);
+        assetManager.load(MUSIC_FIGHT_1, Sound.class);
+        assetManager.load(MUSIC_FIGHT_2, Sound.class);
+        assetManager.load(MUSIC_FAIL, Sound.class);
+        assetManager.load(MUSIC_WIN, Sound.class);
+
         assetManager.finishLoading();
         processAnimation(PAWN_IDLE, 1, 1f);
         processAnimation(CASTLE_IDLE, 1, 1f);
@@ -67,6 +80,10 @@ public class LoadingManager {
 
     public Animation<TextureRegion> getAnimation(String name) {
         return anims.get(name);
+    }
+
+    public Sound getSound(String name) {
+        return assetManager.get(name, Sound.class);
     }
 
     private void processAnimation(String fileName, int numberOfFrames, float frameDelay) {

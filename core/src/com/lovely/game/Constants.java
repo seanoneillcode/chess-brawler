@@ -9,8 +9,9 @@ class Constants {
     static final float HALF_TILE_SIZE = TILE_SIZE / 2.0f;
     static final String RED = "red";
     static final String BLUE = "blue";
-    static final float GAME_SPEED = 0.25f;
-    static final float SHAKE_AMOUNT = 0.5f;
+    static final float GAME_SPEED = 0.125f;
+    static final float GAME_PIECE_TIME_SPEED = 2f;
+    static final float SHAKE_AMOUNT = 0.0f;
     static final String PLAYING_GAME = "playing-game";
     static final String GAME_WON = "game-won";
     static final String GAME_SELECT = "game-select";
