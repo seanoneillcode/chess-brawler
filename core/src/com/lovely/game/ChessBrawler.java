@@ -14,20 +14,27 @@ public class ChessBrawler extends ApplicationAdapter {
 
     SpriteBatch batch;
 	LoadingManager loadingManager;
+	CameraManager cameraManager;
+	InputManager inputManager;
     private float timer = 0;
 
     @Override
 	public void create () {
 		loadingManager = new LoadingManager();
+        inputManager = new InputManager();
+        cameraManager = new CameraManager();
 		batch = new SpriteBatch();
 		loadingManager.load();
 	}
 
 	@Override
 	public void render () {
+        inputManager.update(this);
+        cameraManager.update();
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
+        batch.setProjectionMatrix(cameraManager.camera.combined);
         drawLevel();
 		batch.end();
 	}
