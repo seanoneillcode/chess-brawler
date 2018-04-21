@@ -144,7 +144,7 @@ public class ChessBrawler extends ApplicationAdapter {
         Sprite sprite = new Sprite();
         for (Piece piece : pieceManager.pieces) {
             boolean loop = true;
-            sprite.setColor(piece.owner.equals(RED) ? (new Color(1.0f, 1.0f, 1.0f, 1.0f)) : (new Color(0.0f, 1.0f, 1.0f, 1.0f)));
+            sprite.setColor(piece.owner.equals(RED) ? (new Color(1.0f, 1.0f, 1.0f, 1.0f)) : (new Color(1.0f, 1.0f, 1.0f, 1.0f)));
             if (pieceManager.selectedPiece != null && pieceManager.selectedPiece == piece) {
                 sprite.setColor(new Color(0.5f, 1.0f, 0.5f, 1f));
             }
