@@ -23,6 +23,7 @@ public class PieceManager {
     PieceManager() {
         pieces = new ArrayList<>();
         offset = new Vector2(HALF_TILE_SIZE, HALF_TILE_SIZE);
+        legalMoves = new ArrayList<>();
     }
 
     void update(ChessBrawler context) {
@@ -65,6 +66,10 @@ public class PieceManager {
         return piece.moveTimer <= 0;
     }
 
+    private boolean isEnemy(Piece piece, Piece other) {
+        return !piece.owner.equals(other.owner);
+    }
+
     private void movePiece(Piece selectedPiece, Move move) {
         Vector2 target = new Vector2(move.x, move.y).scl(TILE_SIZE);
         Vector2 mov = target.cpy().sub(selectedPiece.pos);
@@ -81,6 +86,17 @@ public class PieceManager {
         return false;
     }
 
+    Piece getPieceAt(int x, int y) {
+        for (Piece piece : pieces) {
+            if (MathUtils.round(piece.pos.x / TILE_SIZE) == x && MathUtils.round(piece.pos.y / TILE_SIZE) == y) {
+                return piece;
+            }
+        }
+        return null;
+    }
+
+
+
     List<Move> generateMoves(Piece piece, ChessBrawler context) {
         if (!piece.owner.equals(context.playerOwner) && !context.isTesting) {
             return Collections.emptyList();
@@ -90,13 +106,27 @@ public class PieceManager {
         int ypos = MathUtils.round(piece.pos.y / TILE_SIZE);
         int ydir = piece.owner.equals(RED) ? 1 : -1;
         if (piece.type == PAWN) {
-            moves.add(new Move(xpos, ypos + ydir));
+            if (!isOccupied(xpos, ypos + ydir)) {
+                moves.add(new Move(xpos, ypos + ydir));
+            }
+            Piece leftAtt = getPieceAt(xpos - 1, ypos + ydir);
+            if (leftAtt != null && isEnemy(piece, leftAtt)) {
+                moves.add(new Move(xpos - 1, ypos + ydir, true));
+            }
+            Piece rightAtt = getPieceAt(xpos + 1, ypos + ydir);
+            if (rightAtt != null && isEnemy(piece, rightAtt)) {
+                moves.add(new Move(xpos + 1, ypos + ydir, true));
+            }
         }
         if (piece.type == CASTLE) {
             for (int i = xpos + 1; i < 8; i++) {
                 if (!isOccupied(i, ypos)) {
                     moves.add(new Move(i, ypos));
                 } else {
+                    Piece attPiece = getPieceAt(i, ypos);
+                    if (attPiece != null && isEnemy(piece, attPiece)) {
+                        moves.add(new Move(i, ypos, true));
+                    }
                     break;
                 }
             }
@@ -104,6 +134,10 @@ public class PieceManager {
                 if (!isOccupied(i, ypos)) {
                     moves.add(new Move(i, ypos));
                 } else {
+                    Piece attPiece = getPieceAt(i, ypos);
+                    if (attPiece != null && isEnemy(piece, attPiece)) {
+                        moves.add(new Move(i, ypos, true));
+                    }
                     break;
                 }
             }
@@ -111,6 +145,10 @@ public class PieceManager {
                 if (!isOccupied(xpos, i)) {
                     moves.add(new Move(xpos, i));
                 } else {
+                    Piece attPiece = getPieceAt(xpos, i);
+                    if (attPiece != null && isEnemy(piece, attPiece)) {
+                        moves.add(new Move(xpos, i, true));
+                    }
                     break;
                 }
             }
@@ -118,6 +156,10 @@ public class PieceManager {
                 if (!isOccupied(xpos, i)) {
                     moves.add(new Move(xpos, i));
                 } else {
+                    Piece attPiece = getPieceAt(xpos, i);
+                    if (attPiece != null && isEnemy(piece, attPiece)) {
+                        moves.add(new Move(xpos, i, true));
+                    }
                     break;
                 }
             }
@@ -125,15 +167,12 @@ public class PieceManager {
         return moves;
     }
 
-    public boolean isLegalMove(int x, int y) {
-        if (legalMoves == null || legalMoves.isEmpty()) {
-            return false;
-        }
+    Move getLegalMove(int x, int y) {
         for (Move move : legalMoves) {
             if (move.x == x && move.y == y) {
-                return true;
+                return move;
             }
         }
-        return false;
+        return null;
     }
 }

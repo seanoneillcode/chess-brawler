@@ -15,6 +15,7 @@ import static com.lovely.game.Constants.RED;
 import static com.lovely.game.Constants.TILE_SIZE;
 import static com.lovely.game.LoadingManager.TILE;
 import static com.lovely.game.LoadingManager.TILE_ACTIVE;
+import static com.lovely.game.LoadingManager.TILE_TAKING;
 
 public class ChessBrawler extends ApplicationAdapter {
 
@@ -82,8 +83,13 @@ public class ChessBrawler extends ApplicationAdapter {
 	    for (int x = 0; x < 8; x++) {
 	        for (int y = 0; y < 8; y++) {
 	            TextureRegion region;
-	            if (pieceManager.isLegalMove(x, y)) {
-                    region = loadingManager.getAnimation(TILE_ACTIVE).getKeyFrame(timer);
+	            Move move = pieceManager.getLegalMove(x, y);
+	            if (move != null) {
+	                if (move.taking) {
+                        region = loadingManager.getAnimation(TILE_TAKING).getKeyFrame(timer);
+                    } else {
+                        region = loadingManager.getAnimation(TILE_ACTIVE).getKeyFrame(timer);
+                    }
                 } else {
                     region = loadingManager.getAnimation(TILE).getKeyFrame(timer);
                 }

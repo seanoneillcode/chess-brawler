@@ -24,6 +24,7 @@ public class LoadingManager {
     static final String KING_IDLE = "king-idle.png";
     static final String TILE = "tile.png";
     static final String TILE_ACTIVE = "tile-active.png";
+    static final String TILE_TAKING = "tile-taking.png";
     static final String CURSOR = "cursor.png";
 
     private Map<String, Animation<TextureRegion>> anims;
@@ -46,6 +47,7 @@ public class LoadingManager {
         assetManager.load(KING_IDLE, Texture.class);
         assetManager.load(TILE, Texture.class);
         assetManager.load(TILE_ACTIVE, Texture.class);
+        assetManager.load(TILE_TAKING, Texture.class);
         assetManager.load(CURSOR, Texture.class);
         assetManager.finishLoading();
         processAnimation(PAWN_IDLE, 1, 1f);
@@ -56,6 +58,7 @@ public class LoadingManager {
         processAnimation(KING_IDLE, 1, 1f);
         processAnimation(TILE, 1, 1f);
         processAnimation(TILE_ACTIVE, 1, 1f);
+        processAnimation(TILE_TAKING, 1, 1f);
         processAnimation(CURSOR, 1, 1f);
     }
 
