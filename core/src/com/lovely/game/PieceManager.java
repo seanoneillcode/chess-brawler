@@ -91,7 +91,7 @@ public class PieceManager {
                 if (piece.dieTimer < 0) {
                     piece.state = Piece.State.DEAD;
                     if (piece.type == KING) {
-                        context.gameWinner = piece.owner;
+                        context.gameWinner = piece.owner.equals(RED) ? BLUE : RED;
                         context.changeScreen(GAME_WON);
                     }
                 }

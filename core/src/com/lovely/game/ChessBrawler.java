@@ -63,7 +63,7 @@ public class ChessBrawler extends ApplicationAdapter {
         waitingForContinue = true;
         if (screen.equals(GAME_WON)) {
             effectsManager.blowUpPlayer(gameWinner.equals(RED) ? BLUE : RED, this);
-            String winLose = gameWinner.equals(RED) ? MUSIC_WIN : MUSIC_FAIL;
+            String winLose = gameWinner.equals(playerOwner) ? MUSIC_WIN : MUSIC_FAIL;
             soundManager.playMusic(winLose, this, false);
         }
         this.screen = screen;
@@ -77,7 +77,7 @@ public class ChessBrawler extends ApplicationAdapter {
         gameWinner = null;
 		boardManager.createPieces(this);
 		screenTimer = 1f;
-		List<String> fightSongs = Arrays.asList(MUSIC_FIGHT_0, MUSIC_FIGHT_1, MUSIC_FIGHT_2);
+		List<String> fightSongs = Arrays.asList(MUSIC_FIGHT_0, MUSIC_FIGHT_1, MUSIC_FIGHT_2, MUSIC_FIGHT_3);
         soundManager.playMusic(fightSongs.get(MathUtils.random(fightSongs.size() - 1)), this, true);
     }
 

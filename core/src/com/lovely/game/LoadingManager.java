@@ -20,8 +20,8 @@ public class LoadingManager {
     static final String PAWN_WALK = "pawn-walk.png";
     static final String PAWN_DIE = "pawn-die.png";
     static final String CASTLE_IDLE = "castle-idle.png";
-    static final String CASTLE_WALK = "castle-idle.png";
-    static final String CASTLE_DIE = "castle-idle.png";
+    static final String CASTLE_WALK = "castle-walk.png";
+    static final String CASTLE_DIE = "castle-die.png";
     static final String KNIGHT_IDLE = "knight-idle.png";
     static final String KNIGHT_WALK = "knight-walk.png";
     static final String KNIGHT_DIE = "knight-die.png";
@@ -30,6 +30,8 @@ public class LoadingManager {
     static final String BISHOP_DIE = "bishop-die.png";
     static final String QUEEN_IDLE = "queen-idle.png";
     static final String KING_IDLE = "king-idle.png";
+    static final String KING_WALK = "king-walk.png";
+    static final String KING_DIE = "king-die.png";
     static final String EXPLOSION = "explosion.png";
     static final String TILE = "tile.png";
     static final String TILE_ACTIVE = "tile-active.png";
@@ -38,7 +40,8 @@ public class LoadingManager {
 
     static final String MUSIC_FIGHT_0 = "sound/fight-0.ogg";
     static final String MUSIC_FIGHT_1 = "sound/fight-1.ogg";
-    static final String MUSIC_FIGHT_2 = "sound/fight-3.ogg";
+    static final String MUSIC_FIGHT_2 = "sound/fight-2.ogg";
+    static final String MUSIC_FIGHT_3 = "sound/fight-3.ogg";
     static final String MUSIC_FAIL = "sound/fail.ogg";
     static final String MUSIC_WIN = "sound/win.ogg";
 
@@ -68,6 +71,8 @@ public class LoadingManager {
         assetManager.load(BISHOP_DIE, Texture.class);
         assetManager.load(QUEEN_IDLE, Texture.class);
         assetManager.load(KING_IDLE, Texture.class);
+        assetManager.load(KING_WALK, Texture.class);
+        assetManager.load(KING_DIE, Texture.class);
         assetManager.load(TILE, Texture.class);
         assetManager.load(TILE_ACTIVE, Texture.class);
         assetManager.load(TILE_TAKING, Texture.class);
@@ -77,6 +82,7 @@ public class LoadingManager {
         assetManager.load(MUSIC_FIGHT_0, Sound.class);
         assetManager.load(MUSIC_FIGHT_1, Sound.class);
         assetManager.load(MUSIC_FIGHT_2, Sound.class);
+        assetManager.load(MUSIC_FIGHT_3, Sound.class);
         assetManager.load(MUSIC_FAIL, Sound.class);
         assetManager.load(MUSIC_WIN, Sound.class);
 
@@ -84,9 +90,9 @@ public class LoadingManager {
         processAnimation(PAWN_IDLE, 4, 0.2f);
         processAnimation(PAWN_WALK, 4, 0.2f);
         processAnimation(PAWN_DIE, 4, 0.1f);
-        processAnimation(CASTLE_IDLE, 1, 0.2f);
-        processAnimation(CASTLE_WALK, 1, 0.2f);
-        processAnimation(CASTLE_DIE, 1, 0.1f);
+        processAnimation(CASTLE_IDLE, 4, 0.2f);
+        processAnimation(CASTLE_WALK, 4, 0.2f);
+        processAnimation(CASTLE_DIE, 4, 0.1f);
         processAnimation(KNIGHT_IDLE, 4, 0.2f);
         processAnimation(KNIGHT_WALK, 4, 0.2f);
         processAnimation(KNIGHT_DIE, 4, 0.1f);
@@ -94,7 +100,9 @@ public class LoadingManager {
         processAnimation(BISHOP_WALK, 4, 0.2f);
         processAnimation(BISHOP_DIE, 4, 0.1f);
         processAnimation(QUEEN_IDLE, 1, 1f);
-        processAnimation(KING_IDLE, 1, 1f);
+        processAnimation(KING_IDLE, 4, 0.2f);
+        processAnimation(KING_WALK, 4, 0.2f);
+        processAnimation(KING_DIE, 4, 0.2f);
         processAnimation(TILE, 1, 1f);
         processAnimation(TILE_ACTIVE, 1, 1f);
         processAnimation(TILE_TAKING, 1, 1f);
