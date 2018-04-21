@@ -59,9 +59,8 @@ public class PieceManager {
         }
         for (Piece piece : pieces) {
             boolean moving = false;
-            boolean moved = false;
-            piece.animState = Piece.AnimState.IDLE;
-            if (piece.moveTimer > 0) {
+
+            if (piece.moveTimer > 0 && piece.state == Piece.State.ALIVE) {
                 moving = true;
                 piece.animState = Piece.AnimState.WALK;
             }
@@ -69,19 +68,22 @@ public class PieceManager {
             piece.animTimer = piece.animTimer + Gdx.graphics.getDeltaTime();
             if (moving) {
                 if (piece.moveTimer < 0) {
-                    moved = true;
                     piece.mov = new Vector2();
                     piece.pos = new Vector2(MathUtils.round(piece.pos.x / TILE_SIZE) * TILE_SIZE, MathUtils.round(piece.pos.y / TILE_SIZE) * TILE_SIZE);
                 }
                 piece.pos.add(piece.mov);
             }
-            if (moved && piece.state == Piece.State.ALIVE) {
+            if (moving && piece.state == Piece.State.ALIVE) {
                 for (Piece other : pieces) {
-                    if (piece != other && isSameTile(piece, other)) {
+                    if (other.state == Piece.State.ALIVE && piece != other && !piece.owner.equals(other.owner) && isSameTile(piece, other)) {
                         other.state = Piece.State.DYING;
                         other.animTimer = 0;
+                        other.dieTimer = DYING_TIMER;
                     }
                 }
+            }
+            if (piece.state == Piece.State.ALIVE && piece.moveTimer <= 0) {
+                piece.animState = Piece.AnimState.IDLE;
             }
             if (piece.state == Piece.State.DYING) {
                 piece.animState = Piece.AnimState.DIE;
@@ -120,10 +122,12 @@ public class PieceManager {
         selectedPiece.mov = mov.cpy().nor().scl(GAME_SPEED);
         selectedPiece.moveTimer = ((mov.len() * GAME_PIECE_TIME_SPEED) / TILE_SIZE );
         selectedPiece.animTimer = 0;
-        selectedPiece.animState = Piece.AnimState.WALK;
     }
 
     boolean isSameTile(Piece piece, Piece other) {
+        if (Math.abs(piece.pos.x - other.pos.x) < HALF_TILE_SIZE && Math.abs(piece.pos.y - other.pos.y) < HALF_TILE_SIZE) {
+            return true;
+        }
         return MathUtils.round(piece.pos.x / TILE_SIZE) == MathUtils.round(other.pos.x / TILE_SIZE)
                 && MathUtils.round(piece.pos.y / TILE_SIZE) == MathUtils.round(other.pos.y / TILE_SIZE);
     }

@@ -143,7 +143,7 @@ public class ChessBrawler extends ApplicationAdapter {
     private void drawPieces() {
         Sprite sprite = new Sprite();
         for (Piece piece : pieceManager.pieces) {
-
+            boolean loop = true;
             sprite.setColor(piece.owner.equals(RED) ? (new Color(1.0f, 1.0f, 1.0f, 1.0f)) : (new Color(0.0f, 1.0f, 1.0f, 1.0f)));
             if (pieceManager.selectedPiece != null && pieceManager.selectedPiece == piece) {
                 sprite.setColor(new Color(0.5f, 1.0f, 0.5f, 1f));
@@ -153,9 +153,10 @@ public class ChessBrawler extends ApplicationAdapter {
                 image = piece.walkImage;
             }
             if (piece.animState == Piece.AnimState.DIE) {
+                loop = false;
                 image = piece.dieImage;
             }
-            TextureRegion region = loadingManager.getAnimation(image).getKeyFrame(piece.animTimer, true);
+            TextureRegion region = loadingManager.getAnimation(image).getKeyFrame(piece.animTimer, loop);
             sprite.setSize(region.getRegionWidth(), region.getRegionHeight());
             sprite.setPosition(piece.pos.y - (region.getRegionWidth() / 2.0f) + pieceOffset.y,
                     piece.pos.x - (region.getRegionHeight() / 2.0f) + pieceOffset.x);

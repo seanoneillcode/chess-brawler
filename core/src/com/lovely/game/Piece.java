@@ -25,7 +25,7 @@ public class Piece {
         this.idleImage = idleImage;
         state = State.ALIVE;
         moveTimer = 0;
-        animTimer = MathUtils.random(2.0f);
+        animTimer = MathUtils.random(1.0f);
         isLocked = false;
         animState = AnimState.IDLE;
         dieTimer = 0;

@@ -69,9 +69,9 @@ public class LoadingManager {
         assetManager.load(MUSIC_WIN, Sound.class);
 
         assetManager.finishLoading();
-        processAnimation(PAWN_IDLE, 4, 0.25f);
-        processAnimation(PAWN_WALK, 4, 0.25f);
-        processAnimation(PAWN_DIE, 4, 0.25f);
+        processAnimation(PAWN_IDLE, 4, 0.2f);
+        processAnimation(PAWN_WALK, 4, 0.2f);
+        processAnimation(PAWN_DIE, 4, 0.1f);
         processAnimation(CASTLE_IDLE, 1, 1f);
         processAnimation(KNIGHT_IDLE, 1, 1f);
         processAnimation(BISHOP_IDLE, 1, 1f);
