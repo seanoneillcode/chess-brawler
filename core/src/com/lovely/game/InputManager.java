@@ -27,13 +27,16 @@ public class InputManager {
             Gdx.app.exit();
         }
         justClicked = false;
-        if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+        if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
             if (!clickLock) {
                 clickLock = true;
                 justClicked = true;
             }
         } else {
             clickLock = false;
+        }
+        if(Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+            context.pieceManager.deselect();
         }
     }
 }

@@ -10,8 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.lovely.game.Constants.*;
-import static com.lovely.game.PieceType.CASTLE;
-import static com.lovely.game.PieceType.PAWN;
+import static com.lovely.game.PieceType.*;
 
 public class PieceManager {
 
@@ -33,13 +32,11 @@ public class PieceManager {
                     Rectangle rectangle = new Rectangle(move.x * TILE_SIZE, move.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                     if (rectangle.contains(context.inputManager.mousePosOnBoard.cpy().add(offset))) {
                         movePiece(selectedPiece, move);
-                        selectedPiece = null;
-                        legalMoves = null;
+                        deselect();
                     }
                 }
             }
-            selectedPiece = null;
-            legalMoves = Collections.emptyList();
+            deselect();
             for (Piece piece : pieces) {
                 Rectangle rectangle = new Rectangle(piece.pos.x, piece.pos.y, TILE_SIZE, TILE_SIZE);
                 if (canSelectPiece(piece) && rectangle.contains(context.inputManager.mousePosOnBoard.cpy().add(offset))) {
@@ -61,8 +58,9 @@ public class PieceManager {
                 piece.pos.add(piece.mov);
             }
             for (Piece other : pieces) {
-                if (piece != other && isSameTile(piece, other) && piece.state != Piece.State.DEAD) {
+                if (piece != other && isSameTile(piece, other) && piece.state != Piece.State.DEAD && piece.moveTimer <= 0 && other.moveTimer <= 0) {
                     other.state = Piece.State.DEAD;
+                    context.screenShaker.shake(SHAKE_AMOUNT);
                 }
             }
         }
@@ -137,7 +135,7 @@ public class PieceManager {
                 moves.add(new Move(xpos + 1, ypos + ydir, true));
             }
         }
-        if (piece.type == CASTLE) {
+        if (piece.type == CASTLE || piece.type == QUEEN) {
             for (int i = xpos + 1; i < 8; i++) {
                 if (!isOccupied(i, ypos)) {
                     moves.add(new Move(i, ypos));
@@ -183,7 +181,105 @@ public class PieceManager {
                 }
             }
         }
+        if (piece.type == BISHOP || piece.type == QUEEN) {
+            for (int i = xpos + 1, j = ypos + 1; i < 8 && j < 8; i++, j++) {
+                if (!isOccupied(i, j)) {
+                    moves.add(new Move(i, j));
+                } else {
+                    Piece attPiece = getTakingPieceAt(i, j);
+                    if (attPiece != null && isEnemy(piece, attPiece)) {
+                        moves.add(new Move(i, j, true));
+                    }
+                    break;
+                }
+            }
+            for (int i = xpos - 1, j = ypos + 1; i > -1 && j < 8; i--, j++) {
+                if (!isOccupied(i, j)) {
+                    moves.add(new Move(i, j));
+                } else {
+                    Piece attPiece = getTakingPieceAt(i, j);
+                    if (attPiece != null && isEnemy(piece, attPiece)) {
+                        moves.add(new Move(i, j, true));
+                    }
+                    break;
+                }
+            }
+            for (int i = xpos + 1, j = ypos - 1; i < 8 && j > -1; i++, j--) {
+                if (!isOccupied(i, j)) {
+                    moves.add(new Move(i, j));
+                } else {
+                    Piece attPiece = getTakingPieceAt(i, j);
+                    if (attPiece != null && isEnemy(piece, attPiece)) {
+                        moves.add(new Move(i, j, true));
+                    }
+                    break;
+                }
+            }
+            for (int i = ypos - 1, j = xpos - 1; i > -1 &&  j > -1; i--, j--) {
+                if (!isOccupied(j, i)) {
+                    moves.add(new Move(j, i));
+                } else {
+                    Piece attPiece = getTakingPieceAt(j, i);
+                    if (attPiece != null && isEnemy(piece, attPiece)) {
+                        moves.add(new Move(j, i, true));
+                    }
+                    break;
+                }
+            }
+        }
+        if (piece.type == KING) {
+            List<Move> kingMoves = new ArrayList<>();
+            kingMoves.add(pieceCheck(xpos, ypos + ydir, piece));
+            kingMoves.add(pieceCheck(xpos, ypos - ydir, piece));
+            kingMoves.add(pieceCheck(xpos + 1, ypos + ydir, piece));
+            kingMoves.add(pieceCheck(xpos + 1, ypos - ydir, piece));
+            kingMoves.add(pieceCheck(xpos - 1, ypos + ydir, piece));
+            kingMoves.add(pieceCheck(xpos - 1, ypos - ydir, piece));
+            kingMoves.add(pieceCheck(xpos + 1, ypos, piece));
+            kingMoves.add(pieceCheck(xpos - 1, ypos, piece));
+            for (Move move : kingMoves) {
+                if (move != null) {
+                    moves.add(move);
+                }
+            }
+        }
+        if (piece.type == KNIGHT) {
+            List<Move> knightMoves = new ArrayList<>();
+            knightMoves.add(pieceCheck(xpos + 1, ypos + (ydir * 2), piece));
+            knightMoves.add(pieceCheck(xpos + 1, ypos - (ydir * 2), piece));
+            knightMoves.add(pieceCheck(xpos - 1, ypos + (ydir * 2), piece));
+            knightMoves.add(pieceCheck(xpos - 1, ypos - (ydir * 2), piece));
+
+            knightMoves.add(pieceCheck(xpos + 2, ypos + ydir, piece));
+            knightMoves.add(pieceCheck(xpos + 2, ypos - ydir, piece));
+            knightMoves.add(pieceCheck(xpos - 2, ypos + ydir, piece));
+            knightMoves.add(pieceCheck(xpos - 2, ypos - ydir, piece));
+            for (Move move : knightMoves) {
+                if (move != null) {
+                    moves.add(move);
+                }
+            }
+        }
         return moves;
+    }
+
+    Move pieceCheck(int tx, int ty, Piece piece) {
+        if (!inBoard(tx, ty)) {
+            return null;
+        }
+        if (!isOccupied(tx, ty)) {
+            return new Move(tx, ty);
+        } else {
+            Piece attPiece = getTakingPieceAt(tx, ty);
+            if (attPiece != null && isEnemy(piece, attPiece)) {
+                return new Move(tx, ty, true);
+            }
+        }
+        return null;
+    }
+
+    boolean inBoard(int x, int y) {
+        return x > -1 && x  < 8 && y > -1 && y < 8;
     }
 
     Move getLegalMove(int x, int y) {
@@ -193,5 +289,10 @@ public class PieceManager {
             }
         }
         return null;
+    }
+
+    public void deselect() {
+        selectedPiece = null;
+        legalMoves = Collections.emptyList();
     }
 }

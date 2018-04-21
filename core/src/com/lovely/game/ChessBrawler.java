@@ -25,6 +25,7 @@ public class ChessBrawler extends ApplicationAdapter {
 	InputManager inputManager;
 	PieceManager pieceManager;
 	BoardManager boardManager;
+	ScreenShaker screenShaker;
     private float timer = 0;
     public String playerOwner = RED;
     Vector2 pieceOffset;
@@ -37,6 +38,7 @@ public class ChessBrawler extends ApplicationAdapter {
         cameraManager = new CameraManager();
         pieceManager = new PieceManager();
         boardManager = new BoardManager();
+        screenShaker = new ScreenShaker();
         pieceOffset = new Vector2(4, 0);
 		batch = new SpriteBatch();
 		loadingManager.load();
@@ -53,7 +55,8 @@ public class ChessBrawler extends ApplicationAdapter {
 	public void render () {
         inputManager.update(this);
         pieceManager.update(this);
-        cameraManager.update();
+        screenShaker.update();
+        cameraManager.update(this);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
