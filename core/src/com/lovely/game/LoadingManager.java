@@ -17,7 +17,13 @@ import java.util.Map;
 public class LoadingManager {
 
     static final String PAWN_IDLE = "pawn-idle.png";
+    static final String CASTLE_IDLE = "castle-idle.png";
+    static final String KNIGHT_IDLE = "knight-idle.png";
+    static final String BISHOP_IDLE = "bishop-idle.png";
+    static final String QUEEN_IDLE = "queen-idle.png";
+    static final String KING_IDLE = "king-idle.png";
     static final String TILE = "tile.png";
+    static final String TILE_ACTIVE = "tile-active.png";
     static final String CURSOR = "cursor.png";
 
     private Map<String, Animation<TextureRegion>> anims;
@@ -33,11 +39,23 @@ public class LoadingManager {
 
     void load() {
         assetManager.load(PAWN_IDLE, Texture.class);
+        assetManager.load(CASTLE_IDLE, Texture.class);
+        assetManager.load(KNIGHT_IDLE, Texture.class);
+        assetManager.load(BISHOP_IDLE, Texture.class);
+        assetManager.load(QUEEN_IDLE, Texture.class);
+        assetManager.load(KING_IDLE, Texture.class);
         assetManager.load(TILE, Texture.class);
+        assetManager.load(TILE_ACTIVE, Texture.class);
         assetManager.load(CURSOR, Texture.class);
         assetManager.finishLoading();
         processAnimation(PAWN_IDLE, 1, 1f);
+        processAnimation(CASTLE_IDLE, 1, 1f);
+        processAnimation(KNIGHT_IDLE, 1, 1f);
+        processAnimation(BISHOP_IDLE, 1, 1f);
+        processAnimation(QUEEN_IDLE, 1, 1f);
+        processAnimation(KING_IDLE, 1, 1f);
         processAnimation(TILE, 1, 1f);
+        processAnimation(TILE_ACTIVE, 1, 1f);
         processAnimation(CURSOR, 1, 1f);
     }
 
