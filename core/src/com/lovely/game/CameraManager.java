@@ -16,7 +16,7 @@ public class CameraManager {
     public CameraManager() {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
-        cameraPos = new Vector2(56, 56);
+        cameraPos = new Vector2(56, 74);
         camera.position.set(cameraPos, 0);
     }
 

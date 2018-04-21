@@ -10,9 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-import static com.lovely.game.Constants.HALF_TILE_SIZE;
-import static com.lovely.game.Constants.RED;
-import static com.lovely.game.Constants.TILE_SIZE;
+import static com.lovely.game.Constants.*;
 import static com.lovely.game.LoadingManager.TILE;
 import static com.lovely.game.LoadingManager.TILE_ACTIVE;
 import static com.lovely.game.LoadingManager.TILE_TAKING;
@@ -26,10 +24,14 @@ public class ChessBrawler extends ApplicationAdapter {
 	PieceManager pieceManager;
 	BoardManager boardManager;
 	ScreenShaker screenShaker;
+	TextManager textManager;
     private float timer = 0;
     public String playerOwner = RED;
     Vector2 pieceOffset;
     public boolean isTesting;
+    String gameWinner;
+    String screen;
+    float screenTimer = 0;
 
     @Override
 	public void create () {
@@ -39,22 +41,34 @@ public class ChessBrawler extends ApplicationAdapter {
         pieceManager = new PieceManager();
         boardManager = new BoardManager();
         screenShaker = new ScreenShaker();
+        textManager = new TextManager();
         pieceOffset = new Vector2(4, 0);
 		batch = new SpriteBatch();
 		loadingManager.load();
 		isTesting = true;
 		startGame();
+		screen = PLAYING_GAME;
 	}
 
+	void changeScreen(String screen) {
+        screenTimer = 4.0f;
+        this.screen = screen;
+    }
+
 	void startGame() {
-        pieceManager.pieces.clear();
+        pieceManager.start();
+        gameWinner = null;
 		boardManager.createPieces(this);
+		screenTimer = 1f;
     }
 
 	@Override
 	public void render () {
+        update();
         inputManager.update(this);
-        pieceManager.update(this);
+        if (screen.equals(PLAYING_GAME)) {
+            pieceManager.update(this);
+        }
         screenShaker.update();
         cameraManager.update(this);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -63,10 +77,36 @@ public class ChessBrawler extends ApplicationAdapter {
         batch.setProjectionMatrix(cameraManager.camera.combined);
         drawLevel();
         drawPieces();
+        drawText();
 		batch.end();
 	}
 
-	private void drawPieces() {
+	void update() {
+        if (screenTimer > 0) {
+            screenTimer = screenTimer - Gdx.graphics.getDeltaTime();
+            if (screenTimer <= 0) {
+                if (screen.equals(GAME_WON)) {
+                    screen = PLAYING_GAME;
+                    startGame();
+                }
+            }
+        }
+    }
+
+    private void drawText() {
+        if (screen.equals(GAME_WON)) {
+            String msg = playerOwner.equals(gameWinner) ? "You win!" : "You lose!";
+            textManager.drawText(batch, msg, new Vector2(40, 104));
+            textManager.drawText(batch, "" + (int)screenTimer, new Vector2(52, 68));
+        }
+        if (screen.equals(PLAYING_GAME)) {
+            if (screenTimer > 0) {
+                textManager.drawText(batch, "FIGHT!", new Vector2(40, 104));
+            }
+        }
+    }
+
+    private void drawPieces() {
         Sprite sprite = new Sprite();
         for (Piece piece : pieceManager.pieces) {
             sprite.setColor(piece.owner.equals(RED) ? (new Color(1.0f, 1.0f, 1.0f, 1.0f)) : (new Color(0.0f, 1.0f, 1.0f, 1.0f)));

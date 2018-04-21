@@ -13,11 +13,11 @@ public class BoardManager {
     
     void createPieces(ChessBrawler context) {
         List<Piece> pieces = context.pieceManager.pieces;
-//        pieces.add(new Piece(new Vector2(0, TILE_SIZE), new Vector2(), PieceType.PAWN, PAWN_IDLE, RED));
-//        pieces.add(new Piece(new Vector2(TILE_SIZE, TILE_SIZE), new Vector2(), PieceType.PAWN, PAWN_IDLE, RED));
-//        pieces.add(new Piece(new Vector2(TILE_SIZE * 2, TILE_SIZE), new Vector2(), PieceType.PAWN, PAWN_IDLE, RED));
-//        pieces.add(new Piece(new Vector2(TILE_SIZE * 3, TILE_SIZE), new Vector2(), PieceType.PAWN, PAWN_IDLE, RED));
-//        pieces.add(new Piece(new Vector2(TILE_SIZE * 4, TILE_SIZE), new Vector2(), PieceType.PAWN, PAWN_IDLE, RED));
+        pieces.add(new Piece(new Vector2(0, TILE_SIZE), new Vector2(), PieceType.PAWN, PAWN_IDLE, RED));
+        pieces.add(new Piece(new Vector2(TILE_SIZE, TILE_SIZE), new Vector2(), PieceType.PAWN, PAWN_IDLE, RED));
+        pieces.add(new Piece(new Vector2(TILE_SIZE * 2, TILE_SIZE), new Vector2(), PieceType.PAWN, PAWN_IDLE, RED));
+        pieces.add(new Piece(new Vector2(TILE_SIZE * 3, TILE_SIZE), new Vector2(), PieceType.PAWN, PAWN_IDLE, RED));
+        pieces.add(new Piece(new Vector2(TILE_SIZE * 4, TILE_SIZE), new Vector2(), PieceType.PAWN, PAWN_IDLE, RED));
         pieces.add(new Piece(new Vector2(TILE_SIZE * 5, TILE_SIZE), new Vector2(), PieceType.PAWN, PAWN_IDLE, RED));
         pieces.add(new Piece(new Vector2(TILE_SIZE * 6, TILE_SIZE), new Vector2(), PieceType.PAWN, PAWN_IDLE, RED));
         pieces.add(new Piece(new Vector2(TILE_SIZE * 7, TILE_SIZE), new Vector2(), PieceType.PAWN, PAWN_IDLE, RED));
@@ -35,11 +35,11 @@ public class BoardManager {
         // BLUE
         pieces.add(new Piece(new Vector2(0, TILE_SIZE * 6), new Vector2(), PieceType.PAWN, PAWN_IDLE, BLUE));
         pieces.add(new Piece(new Vector2(TILE_SIZE, TILE_SIZE * 6), new Vector2(), PieceType.PAWN, PAWN_IDLE, BLUE));
-//        pieces.add(new Piece(new Vector2(TILE_SIZE * 2, TILE_SIZE * 6), new Vector2(), PieceType.PAWN, PAWN_IDLE, BLUE));
-//        pieces.add(new Piece(new Vector2(TILE_SIZE * 3, TILE_SIZE * 6), new Vector2(), PieceType.PAWN, PAWN_IDLE, BLUE));
-//        pieces.add(new Piece(new Vector2(TILE_SIZE * 4, TILE_SIZE * 6), new Vector2(), PieceType.PAWN, PAWN_IDLE, BLUE));
-//        pieces.add(new Piece(new Vector2(TILE_SIZE * 5, TILE_SIZE * 6), new Vector2(), PieceType.PAWN, PAWN_IDLE, BLUE));
-//        pieces.add(new Piece(new Vector2(TILE_SIZE * 6, TILE_SIZE * 6), new Vector2(), PieceType.PAWN, PAWN_IDLE, BLUE));
+        pieces.add(new Piece(new Vector2(TILE_SIZE * 2, TILE_SIZE * 6), new Vector2(), PieceType.PAWN, PAWN_IDLE, BLUE));
+        pieces.add(new Piece(new Vector2(TILE_SIZE * 3, TILE_SIZE * 6), new Vector2(), PieceType.PAWN, PAWN_IDLE, BLUE));
+        pieces.add(new Piece(new Vector2(TILE_SIZE * 4, TILE_SIZE * 6), new Vector2(), PieceType.PAWN, PAWN_IDLE, BLUE));
+        pieces.add(new Piece(new Vector2(TILE_SIZE * 5, TILE_SIZE * 6), new Vector2(), PieceType.PAWN, PAWN_IDLE, BLUE));
+        pieces.add(new Piece(new Vector2(TILE_SIZE * 6, TILE_SIZE * 6), new Vector2(), PieceType.PAWN, PAWN_IDLE, BLUE));
         pieces.add(new Piece(new Vector2(TILE_SIZE * 7, TILE_SIZE * 6), new Vector2(), PieceType.PAWN, PAWN_IDLE, BLUE));
 
 

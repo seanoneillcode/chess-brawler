@@ -19,9 +19,13 @@ public class PieceManager {
     private List<Move> legalMoves;
     private Vector2 offset;
 
+
     PieceManager() {
-        pieces = new ArrayList<>();
         offset = new Vector2(HALF_TILE_SIZE, HALF_TILE_SIZE);
+    }
+
+    void start() {
+        pieces = new ArrayList<>();
         legalMoves = new ArrayList<>();
     }
 
@@ -61,6 +65,10 @@ public class PieceManager {
                 if (piece != other && isSameTile(piece, other) && piece.state != Piece.State.DEAD && piece.moveTimer <= 0 && other.moveTimer <= 0) {
                     other.state = Piece.State.DEAD;
                     context.screenShaker.shake(SHAKE_AMOUNT);
+                    if (other.type == KING) {
+                        context.gameWinner = piece.owner;
+                        context.changeScreen(GAME_WON);
+                    }
                 }
             }
         }
