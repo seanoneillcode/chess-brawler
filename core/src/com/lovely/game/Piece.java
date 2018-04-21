@@ -11,6 +11,7 @@ public class Piece {
     String image;
     String owner;
     public float moveTimer;
+    boolean isLocked;
 
     public Piece(Vector2 pos, Vector2 mov, PieceType type, String image, String owner) {
         this.pos = pos;
@@ -20,6 +21,7 @@ public class Piece {
         this.image = image;
         state = State.ALIVE;
         moveTimer = 0;
+        isLocked = false;
     }
 
     enum State {

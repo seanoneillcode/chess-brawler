@@ -37,7 +37,7 @@ public class ChessBrawler extends ApplicationAdapter {
         cameraManager = new CameraManager();
         pieceManager = new PieceManager();
         boardManager = new BoardManager();
-        pieceOffset = new Vector2(0, 4);
+        pieceOffset = new Vector2(4, 0);
 		batch = new SpriteBatch();
 		loadingManager.load();
 		isTesting = true;
@@ -72,8 +72,8 @@ public class ChessBrawler extends ApplicationAdapter {
             }
             TextureRegion region = loadingManager.getAnimation(piece.image).getKeyFrame(timer, true);
             sprite.setSize(region.getRegionWidth(), region.getRegionHeight());
-            sprite.setPosition(piece.pos.x - (region.getRegionWidth() / 2.0f) + pieceOffset.x,
-                    piece.pos.y - (region.getRegionHeight() / 2.0f) + pieceOffset.y);
+            sprite.setPosition(piece.pos.y - (region.getRegionWidth() / 2.0f) + pieceOffset.y,
+                    piece.pos.x - (region.getRegionHeight() / 2.0f) + pieceOffset.x);
             sprite.setRegion(region);
             sprite.draw(batch);
         }
@@ -93,7 +93,7 @@ public class ChessBrawler extends ApplicationAdapter {
                 } else {
                     region = loadingManager.getAnimation(TILE).getKeyFrame(timer);
                 }
-                batch.draw(region, (x * TILE_SIZE) - HALF_TILE_SIZE, (y *  TILE_SIZE) - HALF_TILE_SIZE);
+                batch.draw(region, (y * TILE_SIZE) - HALF_TILE_SIZE, (x *  TILE_SIZE) - HALF_TILE_SIZE);
 
             }
         }

@@ -31,7 +31,7 @@ public class PieceManager {
             if (selectedPiece != null) {
                 for (Move move : legalMoves) {
                     Rectangle rectangle = new Rectangle(move.x * TILE_SIZE, move.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-                    if (rectangle.contains(context.inputManager.mousePos.cpy().add(offset))) {
+                    if (rectangle.contains(context.inputManager.mousePosOnBoard.cpy().add(offset))) {
                         movePiece(selectedPiece, move);
                         selectedPiece = null;
                         legalMoves = null;
@@ -42,12 +42,14 @@ public class PieceManager {
             legalMoves = Collections.emptyList();
             for (Piece piece : pieces) {
                 Rectangle rectangle = new Rectangle(piece.pos.x, piece.pos.y, TILE_SIZE, TILE_SIZE);
-                if (canSelectPiece(piece) && rectangle.contains(context.inputManager.mousePos.cpy().add(offset))) {
+                if (canSelectPiece(piece) && rectangle.contains(context.inputManager.mousePosOnBoard.cpy().add(offset))) {
                     selectedPiece = piece;
-                    legalMoves = generateMoves(piece, context);
                     break;
                 }
             }
+        }
+        if (selectedPiece != null) {
+            legalMoves = generateMoves(selectedPiece, context);
         }
         for (Piece piece : pieces) {
             if (piece.moveTimer > 0) {
@@ -58,12 +60,17 @@ public class PieceManager {
                 }
                 piece.pos.add(piece.mov);
             }
+            for (Piece other : pieces) {
+                if (piece != other && isSameTile(piece, other) && piece.state != Piece.State.DEAD) {
+                    other.state = Piece.State.DEAD;
+                }
+            }
         }
         pieces.removeIf(p -> p.state == Piece.State.DEAD);
     }
 
     private boolean canSelectPiece(Piece piece) {
-        return piece.moveTimer <= 0;
+        return piece.moveTimer <= 0 && !piece.isLocked;
     }
 
     private boolean isEnemy(Piece piece, Piece other) {
@@ -71,13 +78,22 @@ public class PieceManager {
     }
 
     private void movePiece(Piece selectedPiece, Move move) {
+        Piece targetPiece = getPieceAt(move.x, move.y);
+        if (targetPiece != null) {
+            targetPiece.isLocked = true;
+        }
         Vector2 target = new Vector2(move.x, move.y).scl(TILE_SIZE);
         Vector2 mov = target.cpy().sub(selectedPiece.pos);
         selectedPiece.mov = mov.cpy().nor().scl(GAME_SPEED);
         selectedPiece.moveTimer = (mov.len() / TILE_SIZE);
     }
 
-    public boolean isOccupied(int xpos, int ypos) {
+    boolean isSameTile(Piece piece, Piece other) {
+        return MathUtils.round(piece.pos.x / TILE_SIZE) == MathUtils.round(other.pos.x / TILE_SIZE)
+                && MathUtils.round(piece.pos.y / TILE_SIZE) == MathUtils.round(other.pos.y / TILE_SIZE);
+    }
+
+    boolean isOccupied(int xpos, int ypos) {
         for (Piece piece : pieces) {
             if (MathUtils.round(piece.pos.x / TILE_SIZE) == xpos && MathUtils.round(piece.pos.y / TILE_SIZE) == ypos) {
                 return true;
@@ -95,7 +111,10 @@ public class PieceManager {
         return null;
     }
 
-
+    Piece getTakingPieceAt(int x, int y) {
+        Piece piece = getPieceAt(x, y);
+        return piece != null && piece.moveTimer <= 0 ? piece : null;
+    }
 
     List<Move> generateMoves(Piece piece, ChessBrawler context) {
         if (!piece.owner.equals(context.playerOwner) && !context.isTesting) {
@@ -109,11 +128,11 @@ public class PieceManager {
             if (!isOccupied(xpos, ypos + ydir)) {
                 moves.add(new Move(xpos, ypos + ydir));
             }
-            Piece leftAtt = getPieceAt(xpos - 1, ypos + ydir);
+            Piece leftAtt = getTakingPieceAt(xpos - 1, ypos + ydir);
             if (leftAtt != null && isEnemy(piece, leftAtt)) {
                 moves.add(new Move(xpos - 1, ypos + ydir, true));
             }
-            Piece rightAtt = getPieceAt(xpos + 1, ypos + ydir);
+            Piece rightAtt = getTakingPieceAt(xpos + 1, ypos + ydir);
             if (rightAtt != null && isEnemy(piece, rightAtt)) {
                 moves.add(new Move(xpos + 1, ypos + ydir, true));
             }
@@ -123,7 +142,7 @@ public class PieceManager {
                 if (!isOccupied(i, ypos)) {
                     moves.add(new Move(i, ypos));
                 } else {
-                    Piece attPiece = getPieceAt(i, ypos);
+                    Piece attPiece = getTakingPieceAt(i, ypos);
                     if (attPiece != null && isEnemy(piece, attPiece)) {
                         moves.add(new Move(i, ypos, true));
                     }
@@ -134,7 +153,7 @@ public class PieceManager {
                 if (!isOccupied(i, ypos)) {
                     moves.add(new Move(i, ypos));
                 } else {
-                    Piece attPiece = getPieceAt(i, ypos);
+                    Piece attPiece = getTakingPieceAt(i, ypos);
                     if (attPiece != null && isEnemy(piece, attPiece)) {
                         moves.add(new Move(i, ypos, true));
                     }
@@ -145,7 +164,7 @@ public class PieceManager {
                 if (!isOccupied(xpos, i)) {
                     moves.add(new Move(xpos, i));
                 } else {
-                    Piece attPiece = getPieceAt(xpos, i);
+                    Piece attPiece = getTakingPieceAt(xpos, i);
                     if (attPiece != null && isEnemy(piece, attPiece)) {
                         moves.add(new Move(xpos, i, true));
                     }
@@ -156,7 +175,7 @@ public class PieceManager {
                 if (!isOccupied(xpos, i)) {
                     moves.add(new Move(xpos, i));
                 } else {
-                    Piece attPiece = getPieceAt(xpos, i);
+                    Piece attPiece = getTakingPieceAt(xpos, i);
                     if (attPiece != null && isEnemy(piece, attPiece)) {
                         moves.add(new Move(xpos, i, true));
                     }

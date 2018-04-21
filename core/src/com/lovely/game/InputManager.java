@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector3;
 public class InputManager {
 
     final Vector2 mousePos = new Vector2();
+    final Vector2 mousePosOnBoard = new Vector2();
     private final Vector3 mouseInWorld3D = new Vector3();
     private boolean clickLock = false;
     boolean justClicked = false;
@@ -20,6 +21,8 @@ public class InputManager {
         context.cameraManager.camera.unproject(mouseInWorld3D);
         mousePos.x = mouseInWorld3D.x;
         mousePos.y = mouseInWorld3D.y;
+        mousePosOnBoard.x = mousePos.y;
+        mousePosOnBoard.y = mousePos.x;
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
         }
