@@ -43,14 +43,14 @@ public class PieceManager {
             deselect();
             for (Piece piece : pieces) {
                 Rectangle rectangle = new Rectangle(piece.pos.x, piece.pos.y, TILE_SIZE, TILE_SIZE);
-                if (canSelectPiece(piece) && rectangle.contains(context.inputManager.mousePosOnBoard.cpy().add(offset))) {
+                if (canSelectPiece(piece, context) && rectangle.contains(context.inputManager.mousePosOnBoard.cpy().add(offset))) {
                     selectedPiece = piece;
                     break;
                 }
             }
         }
         if (selectedPiece != null) {
-            legalMoves = generateMoves(selectedPiece, context);
+            legalMoves = generateMoves(selectedPiece);
         }
         for (Piece piece : pieces) {
             if (piece.moveTimer > 0) {
@@ -75,7 +75,10 @@ public class PieceManager {
         pieces.removeIf(p -> p.state == Piece.State.DEAD);
     }
 
-    private boolean canSelectPiece(Piece piece) {
+    private boolean canSelectPiece(Piece piece, ChessBrawler context) {
+        if (!piece.owner.equals(context.playerOwner) && !context.isTesting) {
+            return false;
+        }
         return piece.moveTimer <= 0 && !piece.isLocked;
     }
 
@@ -83,7 +86,7 @@ public class PieceManager {
         return !piece.owner.equals(other.owner);
     }
 
-    private void movePiece(Piece selectedPiece, Move move) {
+    public void movePiece(Piece selectedPiece, Move move) {
         Piece targetPiece = getPieceAt(move.x, move.y);
         if (targetPiece != null) {
             targetPiece.isLocked = true;
@@ -122,10 +125,7 @@ public class PieceManager {
         return piece != null && piece.moveTimer <= 0 ? piece : null;
     }
 
-    List<Move> generateMoves(Piece piece, ChessBrawler context) {
-        if (!piece.owner.equals(context.playerOwner) && !context.isTesting) {
-            return Collections.emptyList();
-        }
+    List<Move> generateMoves(Piece piece) {
         List<Move> moves = new ArrayList<>();
         int xpos = MathUtils.round(piece.pos.x / TILE_SIZE);
         int ypos = MathUtils.round(piece.pos.y / TILE_SIZE);

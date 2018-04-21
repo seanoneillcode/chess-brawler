@@ -25,8 +25,10 @@ public class ChessBrawler extends ApplicationAdapter {
 	BoardManager boardManager;
 	ScreenShaker screenShaker;
 	TextManager textManager;
+	AiPlayer aiPlayer;
     private float timer = 0;
     public String playerOwner = RED;
+    public String aiOwner = BLUE;
     Vector2 pieceOffset;
     public boolean isTesting;
     String gameWinner;
@@ -43,9 +45,10 @@ public class ChessBrawler extends ApplicationAdapter {
         screenShaker = new ScreenShaker();
         textManager = new TextManager();
         pieceOffset = new Vector2(4, 0);
+        aiPlayer = new AiPlayer(aiOwner, 0);
 		batch = new SpriteBatch();
 		loadingManager.load();
-		isTesting = true;
+		isTesting = false;
 		startGame();
 		screen = PLAYING_GAME;
 	}
@@ -69,6 +72,7 @@ public class ChessBrawler extends ApplicationAdapter {
         if (screen.equals(PLAYING_GAME)) {
             pieceManager.update(this);
         }
+        aiPlayer.update(this);
         screenShaker.update();
         cameraManager.update(this);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
