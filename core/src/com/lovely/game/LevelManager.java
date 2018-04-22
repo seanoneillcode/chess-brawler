@@ -71,14 +71,13 @@ public class LevelManager {
         for (Drawable drawable : shadowsClouds) {
             updateDrawable(drawable);
         }
-//        chessBrawler.loadingManager.getAnimation(grassImages.get(MathUtils.random(0, grassImages.size() - 1)))
     }
 
     void updateDrawable(Drawable drawable) {
         drawable.animTimer += Gdx.graphics.getDeltaTime();
         drawable.pos.add(drawable.mov.cpy().scl(Gdx.graphics.getDeltaTime()));
         if (drawable.pos.x > VIEWPORT_WIDTH + 20) {
-            drawable.pos.x = -100;
+            drawable.pos.x = -200;
         }
     }
 }
