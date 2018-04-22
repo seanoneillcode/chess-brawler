@@ -11,6 +11,9 @@ import java.util.Comparator;
 import java.util.List;
 
 import static com.lovely.game.Constants.*;
+import static com.lovely.game.LoadingManager.SOUND_ORDER_1;
+import static com.lovely.game.LoadingManager.SOUND_ORDER_2;
+import static com.lovely.game.Piece.State.DEAD;
 import static com.lovely.game.PieceType.*;
 
 public class PieceManager {
@@ -40,7 +43,8 @@ public class PieceManager {
                 for (Move move : legalMoves) {
                     Rectangle rectangle = new Rectangle(move.x * TILE_SIZE, move.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                     if (rectangle.contains(context.inputManager.mousePosOnBoard.cpy().add(offset))) {
-                        movePiece(selectedPiece, move);
+                        movePiece(selectedPiece, move, context);
+                        context.soundManager.playSound(SOUND_ORDER_2, context);
                         deselect();
                     }
                 }
@@ -50,6 +54,7 @@ public class PieceManager {
                 Rectangle rectangle = new Rectangle(piece.pos.x, piece.pos.y, TILE_SIZE, TILE_SIZE);
                 if (canSelectPiece(piece, context) && rectangle.contains(context.inputManager.mousePosOnBoard.cpy().add(offset))) {
                     selectedPiece = piece;
+                    context.soundManager.playSound(SOUND_ORDER_1, context);
                     break;
                 }
             }
@@ -79,6 +84,8 @@ public class PieceManager {
                         other.state = Piece.State.DYING;
                         other.animTimer = 0;
                         other.dieTimer = DYING_TIMER;
+                        context.soundManager.playClang(context);
+                        context.effectsManager.addBlood(other.pos);
                     }
                 }
             }
@@ -89,7 +96,8 @@ public class PieceManager {
                 piece.animState = Piece.AnimState.DIE;
                 piece.dieTimer = piece.dieTimer - Gdx.graphics.getDeltaTime();
                 if (piece.dieTimer < 0) {
-                    piece.state = Piece.State.DEAD;
+                    context.soundManager.playScream(context);
+                    piece.state = DEAD;
                     if (piece.type == KING) {
                         context.gameWinner = piece.owner.equals(RED) ? BLUE : RED;
                         context.changeScreen(GAME_WON);
@@ -97,12 +105,27 @@ public class PieceManager {
                 }
             }
         }
-        pieces.removeIf(p -> p.state == Piece.State.DEAD);
-        pieces.sort((o1, o2) -> (int)(o1.pos.y - o2.pos.y));
+        //pieces.removeIf(p -> p.state == Piece.State.DEAD);
+        pieces.sort((o1, o2) -> {
+            if (o1.state == DEAD) {
+                if (o2.state == DEAD) {
+                    return 0;
+                } else {
+                    return -1;
+                }
+            }
+            if (o2.state == DEAD) {
+                return 1;
+            }
+            return (int)(o2.pos.y - o1.pos.y);
+        });
     }
 
     private boolean canSelectPiece(Piece piece, ChessBrawler context) {
         if (!piece.owner.equals(context.playerOwner) && !context.isTesting && piece.state == Piece.State.ALIVE) {
+            return false;
+        }
+        if (piece.state == DEAD) {
             return false;
         }
         return !piece.isLocked;
@@ -112,10 +135,11 @@ public class PieceManager {
         return !piece.owner.equals(other.owner);
     }
 
-    public void movePiece(Piece selectedPiece, Move move) {
+    public void movePiece(Piece selectedPiece, Move move, ChessBrawler context) {
         Piece targetPiece = getPieceAt(move.x, move.y);
         if (targetPiece != null) {
             targetPiece.isLocked = false;
+            context.soundManager.playAttack(context);
         }
         Vector2 target = new Vector2(move.x, move.y).scl(TILE_SIZE);
         Vector2 mov = target.cpy().sub(selectedPiece.pos);
@@ -126,7 +150,9 @@ public class PieceManager {
 
     boolean isSameTile(Piece piece, Piece other) {
         if (Math.abs(piece.pos.x - other.pos.x) < HALF_TILE_SIZE && Math.abs(piece.pos.y - other.pos.y) < HALF_TILE_SIZE) {
-            return true;
+            if (piece.state != DEAD) {
+                return true;
+            }
         }
         return MathUtils.round(piece.pos.x / TILE_SIZE) == MathUtils.round(other.pos.x / TILE_SIZE)
                 && MathUtils.round(piece.pos.y / TILE_SIZE) == MathUtils.round(other.pos.y / TILE_SIZE);
@@ -135,7 +161,9 @@ public class PieceManager {
     boolean isOccupied(int xpos, int ypos) {
         for (Piece piece : pieces) {
             if (MathUtils.round(piece.pos.x / TILE_SIZE) == xpos && MathUtils.round(piece.pos.y / TILE_SIZE) == ypos) {
-                return true;
+                if (piece.state != DEAD) {
+                    return true;
+                }
             }
         }
         return false;
@@ -144,7 +172,9 @@ public class PieceManager {
     Piece getPieceAt(int x, int y) {
         for (Piece piece : pieces) {
             if (MathUtils.round(piece.pos.x / TILE_SIZE) == x && MathUtils.round(piece.pos.y / TILE_SIZE) == y) {
-                return piece;
+                if (piece.state != DEAD) {
+                    return piece;
+                }
             }
         }
         return null;

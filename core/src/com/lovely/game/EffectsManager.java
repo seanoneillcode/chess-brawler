@@ -2,38 +2,43 @@ package com.lovely.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import static com.lovely.game.LoadingManager.EXPLOSION;
+import static com.lovely.game.LoadingManager.*;
 
 public class EffectsManager {
 
-    private static final float EXPLOSION_DURATION = 0.64f;
     List<Effect> effects;
+    List<String> bloodImages = Arrays.asList(BLOOD_1, BLOOD_2);
 
     EffectsManager() {
         effects = new ArrayList<>();
     }
 
+    void start() {
+        effects.clear();
+    }
+
     void update() {
         for (Effect effect : effects) {
-            if (effect.offsetTimer < 0) {
-                effect.timer = effect.timer - Gdx.graphics.getDeltaTime();
-                effect.animTimer = effect.animTimer + Gdx.graphics.getDeltaTime();
-            } else {
-                effect.offsetTimer = effect.offsetTimer - Gdx.graphics.getDeltaTime();
-            }
+            effect.animTimer = effect.animTimer + Gdx.graphics.getDeltaTime();
         }
-        effects.removeIf(effect -> effect.timer < 0);
     }
 
     public void blowUpPlayer(String player, ChessBrawler context) {
         for (Piece piece : context.pieceManager.pieces) {
             if (piece.owner.equals(player)) {
-                effects.add(new Effect(EXPLOSION, EXPLOSION_DURATION, piece.pos.cpy(), MathUtils.random(0.6f)));
+                effects.add(new Effect(EXPLOSION, piece.pos.cpy()));
             }
         }
+    }
+
+    public void addBlood(Vector2 pos) {
+        effects.add(new Effect(bloodImages.get(MathUtils.random(bloodImages.size() - 1)), pos.cpy()));
+        effects.add(new Effect(BLOOD_3, pos.cpy().add(0, 4)));
     }
 }

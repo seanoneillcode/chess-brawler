@@ -73,6 +73,7 @@ public class ChessBrawler extends ApplicationAdapter {
     }
 
 	void startGame() {
+        effectsManager.start();
         waitingForContinue = false;
         inputManager.start();
         pieceManager.start();
@@ -102,8 +103,8 @@ public class ChessBrawler extends ApplicationAdapter {
         batch.setProjectionMatrix(cameraManager.camera.combined);
         drawBackground();
         drawLevel();
-        drawPieces();
         drawEffects();
+        drawPieces();
         drawText();
 		batch.end();
 	}
@@ -139,16 +140,15 @@ public class ChessBrawler extends ApplicationAdapter {
     }
 
     private void drawEffects() {
+        timer += Gdx.graphics.getDeltaTime();
         Sprite sprite = new Sprite();
         for (Effect effect : effectsManager.effects) {
-            if (effect.offsetTimer < 0) {
-                TextureRegion region = loadingManager.getAnimation(effect.image).getKeyFrame(effect.animTimer, true);
-                sprite.setSize(region.getRegionWidth(), region.getRegionHeight());
-                sprite.setPosition(effect.pos.y - (region.getRegionWidth() / 2.0f) + pieceOffset.y,
-                        effect.pos.x - (region.getRegionHeight() / 2.0f) + pieceOffset.x);
-                sprite.setRegion(region);
-                sprite.draw(batch);
-            }
+            TextureRegion region = loadingManager.getAnimation(effect.image).getKeyFrame(effect.animTimer, false);
+            sprite.setSize(region.getRegionWidth(), region.getRegionHeight());
+            sprite.setPosition(effect.pos.y - (region.getRegionWidth() / 2.0f) + pieceOffset.y,
+                    effect.pos.x - (region.getRegionHeight() / 2.0f) + pieceOffset.x);
+            sprite.setRegion(region);
+            sprite.draw(batch);
         }
     }
 
@@ -156,10 +156,6 @@ public class ChessBrawler extends ApplicationAdapter {
         Sprite sprite = new Sprite();
         for (Piece piece : pieceManager.pieces) {
             boolean loop = true;
-            sprite.setColor(piece.owner.equals(RED) ? (new Color(1.0f, 1.0f, 1.0f, 1.0f)) : (new Color(1.0f, 1.0f, 1.0f, 1.0f)));
-            if (pieceManager.selectedPiece != null && pieceManager.selectedPiece == piece) {
-                sprite.setColor(new Color(0.5f, 1.0f, 0.5f, 1f));
-            }
             String image = piece.idleImage;
             if (piece.animState == Piece.AnimState.WALK) {
                 image = piece.walkImage;
@@ -200,13 +196,16 @@ public class ChessBrawler extends ApplicationAdapter {
 	            Move move = pieceManager.getLegalMove(x, y);
 	            if (move != null) {
 	                if (move.taking) {
-                        region = loadingManager.getAnimation(TILE_TAKING).getKeyFrame(timer);
+                        region = loadingManager.getAnimation(TILE_TAKING).getKeyFrame(timer, true);
                     } else {
-                        region = loadingManager.getAnimation(TILE_ACTIVE).getKeyFrame(timer);
+                        region = loadingManager.getAnimation(TILE_ACTIVE).getKeyFrame(timer, true);
                     }
                 }
                 if (region != null) {
-                    batch.draw(region, (y * TILE_SIZE) - HALF_TILE_SIZE, (x *  TILE_SIZE) - HALF_TILE_SIZE);
+                    batch.draw(region, (y * TILE_SIZE) - HALF_TILE_SIZE, (x * TILE_SIZE) - HALF_TILE_SIZE);
+                }
+                if (pieceManager.selectedPiece != null) {
+                    batch.draw(loadingManager.getAnimation(TILE_SELECTED).getKeyFrame(timer, true), pieceManager.selectedPiece.pos.y - HALF_TILE_SIZE, pieceManager.selectedPiece.pos.x - HALF_TILE_SIZE);
                 }
             }
         }

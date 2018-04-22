@@ -35,6 +35,7 @@ public class LoadingManager {
     static final String EXPLOSION = "explosion.png";
     static final String TILE = "tile.png";
     static final String TILE_MASK = "tile-mask.png";
+    static final String TILE_SELECTED = "tile-selected.png";
     static final String TILE_ACTIVE = "tile-active.png";
     static final String TILE_TAKING = "tile-taking.png";
     static final String CLOUD_1 = "cloud-1.png";
@@ -43,6 +44,9 @@ public class LoadingManager {
     static final String CLOUD_4 = "cloud-4.png";
     static final String CLOUD_5 = "cloud-5.png";
     static final String CLOUD_6 = "cloud-6.png";
+    static final String BLOOD_1 = "blood-1.png";
+    static final String BLOOD_2 = "blood-2.png";
+    static final String BLOOD_3 = "blood-3.png";
     static final String GRASS_1 = "grass-1.png";
     static final String GRASS_2 = "grass-2.png";
     static final String GRASS_3 = "grass-3.png";
@@ -56,6 +60,21 @@ public class LoadingManager {
     static final String MUSIC_FIGHT_3 = "sound/fight-3.ogg";
     static final String MUSIC_FAIL = "sound/fail.ogg";
     static final String MUSIC_WIN = "sound/win.ogg";
+
+    static final String SOUND_CLANG_1 = "sound/clang-1.ogg";
+    static final String SOUND_CLANG_2 = "sound/clang-2.ogg";
+    static final String SOUND_CLANG_3 = "sound/clang-3.ogg";
+    static final String SOUND_SCREAM_1 = "sound/scream-1.ogg";
+    static final String SOUND_SCREAM_2 = "sound/scream-2.ogg";
+    static final String SOUND_SCREAM_3 = "sound/scream-3.ogg";
+    static final String SOUND_SCREAM_4 = "sound/scream-4.ogg";
+    static final String SOUND_SCREAM_5 = "sound/scream-5.ogg";
+    static final String SOUND_ORDER_1 = "sound/order-1.ogg";
+    static final String SOUND_ORDER_2 = "sound/order-2.ogg";
+    static final String SOUND_ATTACK_1 = "sound/attack-1.ogg";
+    static final String SOUND_ATTACK_2 = "sound/attack-2.ogg";
+    static final String SOUND_ATTACK_3 = "sound/attack-3.ogg";
+
 
     private Map<String, Animation<TextureRegion>> anims;
     private AssetManager assetManager;
@@ -91,11 +110,15 @@ public class LoadingManager {
         assetManager.load(CLOUD_4, Texture.class);
         assetManager.load(CLOUD_5, Texture.class);
         assetManager.load(CLOUD_6, Texture.class);
+        assetManager.load(BLOOD_1, Texture.class);
+        assetManager.load(BLOOD_2, Texture.class);
+        assetManager.load(BLOOD_3, Texture.class);
         assetManager.load(GRASS_1, Texture.class);
         assetManager.load(GRASS_2, Texture.class);
         assetManager.load(GRASS_3, Texture.class);
         assetManager.load(GRASS_4, Texture.class);
         assetManager.load(TILE, Texture.class);
+        assetManager.load(TILE_SELECTED, Texture.class);
         assetManager.load(TILE_MASK, Texture.class);
         assetManager.load(TILE_ACTIVE, Texture.class);
         assetManager.load(TILE_TAKING, Texture.class);
@@ -109,6 +132,20 @@ public class LoadingManager {
         assetManager.load(MUSIC_FIGHT_3, Sound.class);
         assetManager.load(MUSIC_FAIL, Sound.class);
         assetManager.load(MUSIC_WIN, Sound.class);
+
+        assetManager.load(SOUND_CLANG_1, Sound.class);
+        assetManager.load(SOUND_CLANG_2, Sound.class);
+        assetManager.load(SOUND_CLANG_3, Sound.class);
+        assetManager.load(SOUND_SCREAM_1, Sound.class);
+        assetManager.load(SOUND_SCREAM_2, Sound.class);
+        assetManager.load(SOUND_SCREAM_3, Sound.class);
+        assetManager.load(SOUND_SCREAM_4, Sound.class);
+        assetManager.load(SOUND_SCREAM_5, Sound.class);
+        assetManager.load(SOUND_ORDER_1, Sound.class);
+        assetManager.load(SOUND_ORDER_2, Sound.class);
+        assetManager.load(SOUND_ATTACK_1, Sound.class);
+        assetManager.load(SOUND_ATTACK_2, Sound.class);
+        assetManager.load(SOUND_ATTACK_3, Sound.class);
 
         assetManager.finishLoading();
         processAnimation(PAWN_IDLE, 4, 0.2f);
@@ -127,6 +164,9 @@ public class LoadingManager {
         processAnimation(KING_IDLE, 4, 0.2f);
         processAnimation(KING_WALK, 4, 0.2f);
         processAnimation(KING_DIE, 4, 0.2f);
+        processAnimation(BLOOD_1, 6, 0.1f);
+        processAnimation(BLOOD_2, 6, 0.1f);
+        processAnimation(BLOOD_3, 6, 0.2f);
         processAnimation(CLOUD_1, 1, 1f);
         processAnimation(CLOUD_2, 1, 1f);
         processAnimation(CLOUD_3, 1, 1f);
@@ -138,8 +178,9 @@ public class LoadingManager {
         processAnimation(GRASS_3, 4, 0.4f);
         processAnimation(GRASS_4, 4, 0.4f);
         processAnimation(TILE, 1, 1f);
+        processAnimation(TILE_SELECTED, 2, 0.6f);
         processAnimation(TILE_MASK, 1, 1f);
-        processAnimation(TILE_ACTIVE, 1, 1f);
+        processAnimation(TILE_ACTIVE, 2, 0.4f);
         processAnimation(TILE_TAKING, 1, 1f);
         processAnimation(CURSOR, 1, 1f);
         processAnimation(EXPLOSION, 8, 0.08f);

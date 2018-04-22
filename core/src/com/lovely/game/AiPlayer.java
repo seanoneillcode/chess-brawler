@@ -65,7 +65,7 @@ public class AiPlayer {
                     List<Move> moves = context.pieceManager.generateMoves(king);
                     if (!moves.isEmpty()) {
                         Move move = moves.get(MathUtils.random(0, moves.size() - 1));
-                        context.pieceManager.movePiece(king, move);
+                        context.pieceManager.movePiece(king, move, context);
                     }
                 }
                 Piece randomPiece = aiPieces.get(MathUtils.random(0, aiPieces.size() - 1));
@@ -77,7 +77,7 @@ public class AiPlayer {
                     takenAction = true;
                     if (aiLevel == 0) {
                         Move move = moves.get(MathUtils.random(0, moves.size() - 1));
-                        context.pieceManager.movePiece(randomPiece, move);
+                        context.pieceManager.movePiece(randomPiece, move, context);
                     }
                     if (aiLevel == 1) {
                         List<Move> takingMoves = getTakingMoves(moves, context);
@@ -87,7 +87,7 @@ public class AiPlayer {
                         } else {
                             move = moves.get(MathUtils.random(0, moves.size() - 1));
                         }
-                        context.pieceManager.movePiece(randomPiece, move);
+                        context.pieceManager.movePiece(randomPiece, move, context);
                     }
                     if (aiLevel == 2) {
                         List<Move> takingMoves = getTakingMoves(moves, context);
@@ -98,7 +98,7 @@ public class AiPlayer {
                         } else {
                             move = moves.get(MathUtils.random(0, moves.size() - 1));
                         }
-                        context.pieceManager.movePiece(randomPiece, move);
+                        context.pieceManager.movePiece(randomPiece, move, context);
                     }
                 }
             }
