@@ -95,8 +95,8 @@ public class LoadingManager {
     static final String SOUND_SCREAM_3 = "sound/scream-3.ogg";
     static final String SOUND_SCREAM_4 = "sound/scream-4.ogg";
     static final String SOUND_SCREAM_5 = "sound/scream-5.ogg";
-    static final String SOUND_ORDER_1 = "sound/order-1.ogg";
-    static final String SOUND_ORDER_2 = "sound/order-2.ogg";
+    static final String SOUND_ORDER_1 = "sound/select.ogg";
+    static final String SOUND_ORDER_2 = "sound/select.ogg";
     static final String SOUND_ATTACK_1 = "sound/attack-1.ogg";
     static final String SOUND_ATTACK_2 = "sound/attack-2.ogg";
     static final String SOUND_ATTACK_3 = "sound/attack-3.ogg";

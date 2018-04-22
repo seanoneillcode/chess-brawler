@@ -19,8 +19,8 @@ public class SoundManager {
 
     SoundManager() {
         this.sounds = new HashMap<>();
-        this.soundEffectVolume = 0f; // 0.6f
-        this.musicVolume = 0f; // 0.4f
+        this.soundEffectVolume = 0.6f; // 0.6f
+        this.musicVolume = 0.4f; // 0.4f
     }
 
     public void playSound(String name, ChessBrawler context) {

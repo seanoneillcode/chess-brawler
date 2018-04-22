@@ -66,6 +66,7 @@ public class ChessBrawler extends ApplicationAdapter {
         Gdx.input.setCursorCatched(true);
         changeScreen(GAME_MENU);
         levelManager.menuStart();
+        soundManager.playMusic(MUSIC_FIGHT_0, this, true);
 	}
 
 	void changeScreen(String screen) {
@@ -109,7 +110,7 @@ public class ChessBrawler extends ApplicationAdapter {
         gameWinner = null;
 		boardManager.createPieces(this);
 		screenTimer = 1f;
-		List<String> fightSongs = Arrays.asList(MUSIC_FIGHT_0, MUSIC_FIGHT_1, MUSIC_FIGHT_2, MUSIC_FIGHT_3);
+		List<String> fightSongs = Arrays.asList(MUSIC_FIGHT_0, MUSIC_FIGHT_2, MUSIC_FIGHT_3);
         soundManager.playMusic(fightSongs.get(MathUtils.random(fightSongs.size() - 1)), this, true);
     }
 

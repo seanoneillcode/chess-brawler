@@ -12,6 +12,7 @@ import java.util.List;
 import static com.lovely.game.Constants.*;
 import static com.lovely.game.LoadingManager.SOUND_ORDER_1;
 import static com.lovely.game.LoadingManager.SOUND_ORDER_2;
+import static com.lovely.game.Piece.State.ALIVE;
 import static com.lovely.game.Piece.State.DEAD;
 import static com.lovely.game.PieceType.*;
 
@@ -154,6 +155,9 @@ public class PieceManager {
     }
 
     public void movePiece(Piece selectedPiece, Move move, ChessBrawler context) {
+        if (selectedPiece.state != ALIVE) {
+            return;
+        }
         Piece targetPiece = getPieceAt(move.x, move.y);
         if (targetPiece != null) {
             targetPiece.isLocked = false;
