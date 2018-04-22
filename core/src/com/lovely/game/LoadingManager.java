@@ -34,9 +34,21 @@ public class LoadingManager {
     static final String KING_DIE = "king-die.png";
     static final String EXPLOSION = "explosion.png";
     static final String TILE = "tile.png";
+    static final String TILE_MASK = "tile-mask.png";
     static final String TILE_ACTIVE = "tile-active.png";
     static final String TILE_TAKING = "tile-taking.png";
+    static final String CLOUD_1 = "cloud-1.png";
+    static final String CLOUD_2 = "cloud-2.png";
+    static final String CLOUD_3 = "cloud-3.png";
+    static final String CLOUD_4 = "cloud-4.png";
+    static final String CLOUD_5 = "cloud-5.png";
+    static final String CLOUD_6 = "cloud-6.png";
+    static final String GRASS_1 = "grass-1.png";
+    static final String GRASS_2 = "grass-2.png";
+    static final String GRASS_3 = "grass-3.png";
+    static final String GRASS_4 = "grass-4.png";
     static final String CURSOR = "cursor.png";
+    static final String GRASS_BACKGROUND = "background-grass.png";
 
     static final String MUSIC_FIGHT_0 = "sound/fight-0.ogg";
     static final String MUSIC_FIGHT_1 = "sound/fight-1.ogg";
@@ -73,11 +85,23 @@ public class LoadingManager {
         assetManager.load(KING_IDLE, Texture.class);
         assetManager.load(KING_WALK, Texture.class);
         assetManager.load(KING_DIE, Texture.class);
+        assetManager.load(CLOUD_1, Texture.class);
+        assetManager.load(CLOUD_2, Texture.class);
+        assetManager.load(CLOUD_3, Texture.class);
+        assetManager.load(CLOUD_4, Texture.class);
+        assetManager.load(CLOUD_5, Texture.class);
+        assetManager.load(CLOUD_6, Texture.class);
+        assetManager.load(GRASS_1, Texture.class);
+        assetManager.load(GRASS_2, Texture.class);
+        assetManager.load(GRASS_3, Texture.class);
+        assetManager.load(GRASS_4, Texture.class);
         assetManager.load(TILE, Texture.class);
+        assetManager.load(TILE_MASK, Texture.class);
         assetManager.load(TILE_ACTIVE, Texture.class);
         assetManager.load(TILE_TAKING, Texture.class);
         assetManager.load(CURSOR, Texture.class);
         assetManager.load(EXPLOSION, Texture.class);
+        assetManager.load(GRASS_BACKGROUND, Texture.class);
 
         assetManager.load(MUSIC_FIGHT_0, Sound.class);
         assetManager.load(MUSIC_FIGHT_1, Sound.class);
@@ -103,11 +127,23 @@ public class LoadingManager {
         processAnimation(KING_IDLE, 4, 0.2f);
         processAnimation(KING_WALK, 4, 0.2f);
         processAnimation(KING_DIE, 4, 0.2f);
+        processAnimation(CLOUD_1, 1, 1f);
+        processAnimation(CLOUD_2, 1, 1f);
+        processAnimation(CLOUD_3, 1, 1f);
+        processAnimation(CLOUD_4, 1, 1f);
+        processAnimation(CLOUD_5, 1, 1f);
+        processAnimation(CLOUD_6, 1, 1f);
+        processAnimation(GRASS_1, 4, 0.4f);
+        processAnimation(GRASS_2, 4, 0.4f);
+        processAnimation(GRASS_3, 4, 0.4f);
+        processAnimation(GRASS_4, 4, 0.4f);
         processAnimation(TILE, 1, 1f);
+        processAnimation(TILE_MASK, 1, 1f);
         processAnimation(TILE_ACTIVE, 1, 1f);
         processAnimation(TILE_TAKING, 1, 1f);
         processAnimation(CURSOR, 1, 1f);
         processAnimation(EXPLOSION, 8, 0.08f);
+        processAnimation(GRASS_BACKGROUND, 1, 1f);
     }
 
     public Animation<TextureRegion> getAnimation(String name) {

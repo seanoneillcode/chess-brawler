@@ -28,6 +28,7 @@ public class ChessBrawler extends ApplicationAdapter {
 	TextManager textManager;
 	AiPlayer aiPlayer;
     EffectsManager effectsManager;
+    LevelManager levelManager;
     SoundManager soundManager;
     private float timer = 0;
     public String playerOwner = RED;
@@ -50,6 +51,7 @@ public class ChessBrawler extends ApplicationAdapter {
         textManager = new TextManager();
         effectsManager = new EffectsManager();
         soundManager = new SoundManager();
+        levelManager = new LevelManager();
         pieceOffset = new Vector2(4, 0);
         aiPlayer = new AiPlayer(aiOwner, 2);
 		batch = new SpriteBatch();
@@ -74,6 +76,7 @@ public class ChessBrawler extends ApplicationAdapter {
         waitingForContinue = false;
         inputManager.start();
         pieceManager.start();
+        levelManager.start();
         gameWinner = null;
 		boardManager.createPieces(this);
 		screenTimer = 1f;
@@ -88,14 +91,16 @@ public class ChessBrawler extends ApplicationAdapter {
         if (screen.equals(PLAYING_GAME)) {
             pieceManager.update(this);
         }
+        levelManager.update();
         aiPlayer.update(this);
         screenShaker.update();
         cameraManager.update(this);
         update();
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClearColor(0f / 255f, 149f / 255f, 233f / 255f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
         batch.setProjectionMatrix(cameraManager.camera.combined);
+        drawBackground();
         drawLevel();
         drawPieces();
         drawEffects();
@@ -124,6 +129,13 @@ public class ChessBrawler extends ApplicationAdapter {
                 textManager.drawText(batch, "FIGHT!", new Vector2(40, 104));
             }
         }
+    }
+
+    void drawBackground() {
+        for (Drawable drawable : levelManager.clouds) {
+            batch.draw(loadingManager.getAnimation(drawable.image).getKeyFrame(drawable.animTimer, true), drawable.pos.x, drawable.pos.y);
+        }
+        batch.draw(loadingManager.getAnimation(GRASS_BACKGROUND).getKeyFrame(0), -64, -16);
     }
 
     private void drawEffects() {
@@ -166,12 +178,25 @@ public class ChessBrawler extends ApplicationAdapter {
             }
             sprite.draw(batch);
         }
+        for (Drawable drawable : levelManager.shadowsClouds) {
+            batch.draw(loadingManager.getAnimation(drawable.image).getKeyFrame(drawable.animTimer, true), drawable.pos.x, drawable.pos.y);
+        }
     }
 
 	private void drawLevel() {
+        for (Drawable drawable : levelManager.grass) {
+            batch.draw(loadingManager.getAnimation(drawable.image).getKeyFrame(drawable.animTimer, true), drawable.pos.x, drawable.pos.y);
+        }
+        boolean isOtherTile = false;
 	    for (int x = 0; x < 8; x++) {
+            isOtherTile = !isOtherTile;
 	        for (int y = 0; y < 8; y++) {
-	            TextureRegion region;
+	            if (isOtherTile) {
+                    batch.draw(loadingManager.getAnimation(TILE_MASK).getKeyFrame(0), (y * TILE_SIZE) - HALF_TILE_SIZE, (x *  TILE_SIZE) - HALF_TILE_SIZE);
+                }
+                isOtherTile = !isOtherTile;
+
+	            TextureRegion region = null;
 	            Move move = pieceManager.getLegalMove(x, y);
 	            if (move != null) {
 	                if (move.taking) {
@@ -179,11 +204,10 @@ public class ChessBrawler extends ApplicationAdapter {
                     } else {
                         region = loadingManager.getAnimation(TILE_ACTIVE).getKeyFrame(timer);
                     }
-                } else {
-                    region = loadingManager.getAnimation(TILE).getKeyFrame(timer);
                 }
-                batch.draw(region, (y * TILE_SIZE) - HALF_TILE_SIZE, (x *  TILE_SIZE) - HALF_TILE_SIZE);
-
+                if (region != null) {
+                    batch.draw(region, (y * TILE_SIZE) - HALF_TILE_SIZE, (x *  TILE_SIZE) - HALF_TILE_SIZE);
+                }
             }
         }
     }
