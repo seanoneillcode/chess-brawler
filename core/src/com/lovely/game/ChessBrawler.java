@@ -59,6 +59,7 @@ public class ChessBrawler extends ApplicationAdapter {
 		isTesting = false;
 		startGame();
 		screen = PLAYING_GAME;
+        Gdx.input.setCursorCatched(true);
 	}
 
 	void changeScreen(String screen) {
@@ -106,6 +107,7 @@ public class ChessBrawler extends ApplicationAdapter {
         drawEffects();
         drawPieces();
         drawText();
+        drawCursor();
 		batch.end();
 	}
 
@@ -118,6 +120,9 @@ public class ChessBrawler extends ApplicationAdapter {
         }
     }
 
+    private void drawCursor() {
+        batch.draw(loadingManager.getAnimation(inputManager.cursorState.image).getKeyFrame(timer, true), inputManager.mousePos.x - 8, inputManager.mousePos.y - 8);
+    }
 
     private void drawText() {
         if (screen.equals(GAME_WON)) {

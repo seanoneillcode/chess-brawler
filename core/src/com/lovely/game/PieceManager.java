@@ -61,6 +61,16 @@ public class PieceManager {
         }
         if (selectedPiece != null) {
             legalMoves = generateMoves(selectedPiece);
+            for (Move move : legalMoves) {
+                Rectangle rectangle = new Rectangle(move.x * TILE_SIZE, move.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                if (rectangle.contains(context.inputManager.mousePosOnBoard.cpy().add(offset))) {
+                    context.inputManager.cursorState = InputManager.CursorState.MOVE;
+                    Piece targetPiece = getPieceAt(move.x, move.y);
+                    if (targetPiece != null) {
+                        context.inputManager.cursorState = InputManager.CursorState.ATTACK;
+                    }
+                }
+            }
         }
         for (Piece piece : pieces) {
             boolean moving = false;

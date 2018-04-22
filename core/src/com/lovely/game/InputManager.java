@@ -5,6 +5,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
+import static com.lovely.game.LoadingManager.CURSOR;
+import static com.lovely.game.LoadingManager.CURSOR_ATTACK;
+import static com.lovely.game.LoadingManager.CURSOR_MOVE;
+
 public class InputManager {
 
     final Vector2 mousePos = new Vector2();
@@ -12,8 +16,10 @@ public class InputManager {
     private final Vector3 mouseInWorld3D = new Vector3();
     private boolean clickLock = false;
     boolean justClicked = false;
+    CursorState cursorState;
 
     void start() {
+        cursorState = CursorState.SELECT;
         justClicked = false;
         clickLock = false;
     }
@@ -41,6 +47,19 @@ public class InputManager {
         }
         if(Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
             context.pieceManager.deselect();
+        }
+        cursorState = CursorState.SELECT;
+    }
+
+    enum CursorState {
+        SELECT(CURSOR),
+        MOVE(CURSOR_MOVE),
+        ATTACK(CURSOR_ATTACK);
+
+        String image;
+
+        CursorState(String image) {
+            this.image = image;
         }
     }
 }

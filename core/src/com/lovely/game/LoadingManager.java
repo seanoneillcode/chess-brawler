@@ -52,6 +52,8 @@ public class LoadingManager {
     static final String GRASS_3 = "grass-3.png";
     static final String GRASS_4 = "grass-4.png";
     static final String CURSOR = "cursor.png";
+    static final String CURSOR_MOVE = "cursor-move.png";
+    static final String CURSOR_ATTACK = "cursor-attack.png";
     static final String GRASS_BACKGROUND = "background-grass.png";
 
     static final String MUSIC_FIGHT_0 = "sound/fight-0.ogg";
@@ -123,6 +125,8 @@ public class LoadingManager {
         assetManager.load(TILE_ACTIVE, Texture.class);
         assetManager.load(TILE_TAKING, Texture.class);
         assetManager.load(CURSOR, Texture.class);
+        assetManager.load(CURSOR_MOVE, Texture.class);
+        assetManager.load(CURSOR_ATTACK, Texture.class);
         assetManager.load(EXPLOSION, Texture.class);
         assetManager.load(GRASS_BACKGROUND, Texture.class);
 
@@ -183,6 +187,8 @@ public class LoadingManager {
         processAnimation(TILE_ACTIVE, 2, 0.4f);
         processAnimation(TILE_TAKING, 1, 1f);
         processAnimation(CURSOR, 1, 1f);
+        processAnimation(CURSOR_MOVE, 4, 0.1f);
+        processAnimation(CURSOR_ATTACK, 4, 0.1f);
         processAnimation(EXPLOSION, 8, 0.08f);
         processAnimation(GRASS_BACKGROUND, 1, 1f);
     }
