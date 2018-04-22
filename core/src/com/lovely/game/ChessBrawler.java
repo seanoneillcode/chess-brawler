@@ -164,8 +164,8 @@ public class ChessBrawler extends ApplicationAdapter {
         if (screen.equals(GAME_WON)) {
             String msg = playerOwner.equals(gameWinner) ? "YOU WIN" : "YOU LOSE";
 
-            textManager.drawText(batch, msg, cameraManager.cameraPos.cpy().add(-24, 16), Color.YELLOW);
-            textManager.drawText(batch, "RETRY",cameraManager.cameraPos.cpy().add(-16, -16));
+            textManager.drawText(batch, msg, cameraManager.cameraPos.cpy().add(-24, 16), Color.WHITE);
+            textManager.drawText(batch, "RETRY?",cameraManager.cameraPos.cpy().add(-16, -16));
         }
         if (screen.equals(GAME_PLAYING)) {
             if (waitingForContinue) {
