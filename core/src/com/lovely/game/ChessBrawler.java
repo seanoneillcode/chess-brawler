@@ -2,7 +2,6 @@ package com.lovely.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -103,8 +102,10 @@ public class ChessBrawler extends ApplicationAdapter {
 		batch.begin();
         batch.setProjectionMatrix(cameraManager.camera.combined);
         drawBackground();
-        drawLevel();
+        drawGround();
+        drawBoard();
         drawEffects();
+        drawSelectionTiles();
         drawPieces();
         drawText();
         drawCursor();
@@ -184,19 +185,28 @@ public class ChessBrawler extends ApplicationAdapter {
         }
     }
 
-	private void drawLevel() {
+    private void drawGround() {
         for (Drawable drawable : levelManager.grass) {
             batch.draw(loadingManager.getAnimation(drawable.image).getKeyFrame(drawable.animTimer, true), drawable.pos.x, drawable.pos.y);
         }
+    }
+
+    private void drawBoard() {
         boolean isOtherTile = false;
-	    for (int x = 0; x < 8; x++) {
+        for (int x = 0; x < 8; x++) {
             isOtherTile = !isOtherTile;
-	        for (int y = 0; y < 8; y++) {
-	            if (isOtherTile) {
-                    batch.draw(loadingManager.getAnimation(TILE_MASK).getKeyFrame(0), (y * TILE_SIZE) - HALF_TILE_SIZE, (x *  TILE_SIZE) - HALF_TILE_SIZE);
+            for (int y = 0; y < 8; y++) {
+                if (isOtherTile) {
+                    batch.draw(loadingManager.getAnimation(TILE_MASK).getKeyFrame(0), (y * TILE_SIZE) - HALF_TILE_SIZE, (x * TILE_SIZE) - HALF_TILE_SIZE);
                 }
                 isOtherTile = !isOtherTile;
+            }
+        }
+    }
 
+	private void drawSelectionTiles() {
+	    for (int x = 0; x < 8; x++) {
+	        for (int y = 0; y < 8; y++) {
 	            TextureRegion region = null;
 	            Move move = pieceManager.getLegalMove(x, y);
 	            if (move != null) {
