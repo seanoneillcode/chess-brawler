@@ -20,11 +20,21 @@ public class LevelManager {
     List<String> cloudImages = Arrays.asList(CLOUD_4, CLOUD_5, CLOUD_6);
     List<Drawable> clouds;
     List<Drawable> shadowsClouds;
+    List<Drawable> menuClouds;
 
     LevelManager() {
         grass = new ArrayList<>();
         clouds = new ArrayList<>();
         shadowsClouds = new ArrayList<>();
+        menuClouds = new ArrayList<>();
+    }
+
+    void menuStart() {
+        for (int i = 0; i < 8; i++) {
+            Vector2 pos = new Vector2(MathUtils.random(-100, 200), MathUtils.random(-20, 120));
+            Vector2 mov = new Vector2(MathUtils.random(2.0f, 8.0f), 0);
+            menuClouds.add(new Drawable(cloudImages.get(MathUtils.random(0, cloudImages.size() - 1)), pos, MathUtils.random(1.0f), mov));
+        }
     }
 
     void start() {
@@ -69,6 +79,9 @@ public class LevelManager {
             updateDrawable(drawable);
         }
         for (Drawable drawable : shadowsClouds) {
+            updateDrawable(drawable);
+        }
+        for (Drawable drawable : menuClouds) {
             updateDrawable(drawable);
         }
     }

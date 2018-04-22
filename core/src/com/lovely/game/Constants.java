@@ -12,9 +12,9 @@ class Constants {
     static final float GAME_SPEED = 0.125f;
     static final float GAME_PIECE_TIME_SPEED = 2f;
     static final float SHAKE_AMOUNT = 0.0f;
-    static final String PLAYING_GAME = "playing-game";
+    static final String GAME_PLAYING = "playing-game";
     static final String GAME_WON = "game-won";
-    static final String GAME_SELECT = "game-select";
+    static final String GAME_MENU = "game-menu";
     static final float DYING_TIMER = 0.8f;
 
 }

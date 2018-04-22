@@ -7,7 +7,6 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import static com.lovely.game.Constants.*;
@@ -35,7 +34,7 @@ public class PieceManager {
     }
 
     void update(ChessBrawler context) {
-        if (!context.screen.equals(PLAYING_GAME)) {
+        if (!context.screen.equals(GAME_PLAYING)) {
             return;
         }
         if (context.inputManager.justClicked) {

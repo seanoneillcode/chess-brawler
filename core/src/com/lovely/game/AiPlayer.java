@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.lovely.game.Constants.PLAYING_GAME;
+import static com.lovely.game.Constants.GAME_PLAYING;
 import static com.lovely.game.Constants.TILE_SIZE;
 
 public class AiPlayer {
@@ -27,7 +27,7 @@ public class AiPlayer {
     }
 
     public void update(ChessBrawler context) {
-        if (!context.screen.equals(PLAYING_GAME)) {
+        if (!context.screen.equals(GAME_PLAYING)) {
             return;
         }
         if (king == null) {

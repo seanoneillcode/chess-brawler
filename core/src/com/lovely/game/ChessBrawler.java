@@ -39,6 +39,7 @@ public class ChessBrawler extends ApplicationAdapter {
     String screen;
     float screenTimer = 0;
     private boolean waitingForContinue = false;
+    private float countDown = 0;
 
     @Override
 	public void create () {
@@ -57,9 +58,11 @@ public class ChessBrawler extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		loadingManager.load();
 		isTesting = false;
-		startGame();
-		screen = PLAYING_GAME;
+//		startGame();
+		screen = GAME_MENU;
         Gdx.input.setCursorCatched(true);
+        changeScreen(GAME_MENU);
+        levelManager.menuStart();
 	}
 
 	void changeScreen(String screen) {
@@ -69,11 +72,19 @@ public class ChessBrawler extends ApplicationAdapter {
             effectsManager.blowUpPlayer(gameLoser, this);
             String winLose = gameWinner.equals(playerOwner) ? MUSIC_WIN : MUSIC_FAIL;
             soundManager.playMusic(winLose, this, false);
-            cameraManager.targetZoom = 0.4f;
+            cameraManager.targetZoom = 0.6f;
             Vector2 pos = pieceManager.getKingPiece(gameLoser).pos.cpy();
             cameraManager.cameraPos = new Vector2(pos.y, pos.x);
         }
-
+        if (screen.equals(GAME_PLAYING)) {
+            cameraManager.targetZoom = 1f;
+            cameraManager.cameraPos = new Vector2(56, 74);
+            startGame();
+            countDown = 2.0f;
+        }
+        if (screen.equals(GAME_MENU)) {
+            cameraManager.cameraPos = new Vector2(56, 320);
+        }
         this.screen = screen;
 
     }
@@ -91,21 +102,21 @@ public class ChessBrawler extends ApplicationAdapter {
         soundManager.playMusic(fightSongs.get(MathUtils.random(fightSongs.size() - 1)), this, true);
     }
 
-	@Override
-	public void render () {
+    @Override
+    public void render() {
         effectsManager.update();
         inputManager.update(this);
-        if (screen.equals(PLAYING_GAME)) {
+        if (screen.equals(GAME_PLAYING) && !isPaused()) {
             pieceManager.update(this);
+            aiPlayer.update(this);
         }
         levelManager.update();
-        aiPlayer.update(this);
         screenShaker.update();
         cameraManager.update(this);
         update();
-		Gdx.gl.glClearColor(0f / 255f, 149f / 255f, 233f / 255f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
+        Gdx.gl.glClearColor(0f / 255f, 149f / 255f, 233f / 255f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
         batch.setProjectionMatrix(cameraManager.camera.combined);
         drawBackground();
         drawGround();
@@ -113,18 +124,34 @@ public class ChessBrawler extends ApplicationAdapter {
         drawEffects();
         drawSelectionTiles();
         drawPieces();
+        drawMenu();
         drawText();
         drawCursor();
-		batch.end();
-	}
+        batch.end();
+    }
 
-	void update() {
+    private void drawMenu() {
+        if (!screen.equals(GAME_MENU)) {
+            return;
+        }
+        Vector2 pos = cameraManager.cameraPos.cpy().add(-86, -16);
+        for (Drawable drawable : levelManager.menuClouds) {
+            batch.draw(loadingManager.getAnimation(drawable.image).getKeyFrame(drawable.animTimer, true), drawable.pos.x + pos.x, drawable.pos.y + pos.y);
+        }
+        batch.draw(loadingManager.getAnimation(LOGO).getKeyFrame(timer, true), pos.x, pos.y);
+    }
+
+    void update() {
+        timer += Gdx.graphics.getDeltaTime();
+        countDown -= Gdx.graphics.getDeltaTime();
         if (screen.equals(GAME_WON)) {
             if (waitingForContinue && inputManager.justClicked) {
-                screen = PLAYING_GAME;
-                cameraManager.targetZoom = 1f;
-                cameraManager.cameraPos = new Vector2(56, 74);
-                startGame();
+                changeScreen(GAME_PLAYING);
+            }
+        }
+        if (screen.equals(GAME_MENU)) {
+            if (waitingForContinue && inputManager.justClicked) {
+                changeScreen(GAME_PLAYING);
             }
         }
     }
@@ -140,10 +167,18 @@ public class ChessBrawler extends ApplicationAdapter {
             textManager.drawText(batch, msg, cameraManager.cameraPos.cpy().add(-24, 16), Color.YELLOW);
             textManager.drawText(batch, "RETRY",cameraManager.cameraPos.cpy().add(-16, -16));
         }
-        if (screen.equals(PLAYING_GAME)) {
+        if (screen.equals(GAME_PLAYING)) {
             if (waitingForContinue) {
                 textManager.drawText(batch, "FIGHT!", new Vector2(40, 104));
             }
+            if (countDown > 0f) {
+                String msg = countDown > 1.0 ? "READY?" : "BATTLE!";
+                textManager.drawText(batch, msg, cameraManager.cameraPos.cpy().add(-24, 36));
+            }
+        }
+        if (screen.equals(GAME_MENU)) {
+            textManager.drawText(batch, "CLICK TO PLAY",cameraManager.cameraPos.cpy().add(-48, -36));
+            //textManager.drawText(batch, "STORY GAME",cameraManager.cameraPos.cpy().add(-48, -64));
         }
     }
 
@@ -155,7 +190,7 @@ public class ChessBrawler extends ApplicationAdapter {
     }
 
     private void drawEffects() {
-        timer += Gdx.graphics.getDeltaTime();
+
         Sprite sprite = new Sprite();
         for (Effect effect : effectsManager.effects) {
             TextureRegion region = loadingManager.getAnimation(effect.image).getKeyFrame(effect.animTimer, false);
@@ -168,6 +203,9 @@ public class ChessBrawler extends ApplicationAdapter {
     }
 
     private void drawPieces() {
+        if (screen.equals(GAME_MENU)) {
+            return;
+        }
         Sprite sprite = new Sprite();
         for (Piece piece : pieceManager.pieces) {
             boolean loop = true;
@@ -178,6 +216,9 @@ public class ChessBrawler extends ApplicationAdapter {
             if (piece.animState == Piece.AnimState.DIE) {
                 loop = false;
                 image = piece.dieImage;
+            }
+            if (piece.type == PieceType.KING && screen.equals(GAME_WON)) {
+                piece.animTimer += Gdx.graphics.getDeltaTime();
             }
             TextureRegion region = loadingManager.getAnimation(image).getKeyFrame(piece.animTimer, loop);
             sprite.setSize(region.getRegionWidth(), region.getRegionHeight());
@@ -214,6 +255,9 @@ public class ChessBrawler extends ApplicationAdapter {
     }
 
 	private void drawSelectionTiles() {
+        if (screen.equals(GAME_MENU)) {
+            return;
+        }
 	    for (int x = 0; x < 8; x++) {
 	        for (int y = 0; y < 8; y++) {
 	            TextureRegion region = null;
@@ -240,4 +284,8 @@ public class ChessBrawler extends ApplicationAdapter {
 		batch.dispose();
 		loadingManager.dispose();
 	}
+
+    public boolean isPaused() {
+        return countDown > 0;
+    }
 }

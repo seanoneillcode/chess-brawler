@@ -71,6 +71,7 @@ public class LoadingManager {
     static final String CURSOR_MOVE = "cursor-move.png";
     static final String CURSOR_ATTACK = "cursor-attack.png";
     static final String GRASS_BACKGROUND = "background-grass.png";
+    static final String LOGO = "logo.png";
 
     static final String MUSIC_FIGHT_0 = "sound/fight-0.ogg";
     static final String MUSIC_FIGHT_1 = "sound/fight-1.ogg";
@@ -161,6 +162,7 @@ public class LoadingManager {
         assetManager.load(CURSOR_ATTACK, Texture.class);
         assetManager.load(EXPLOSION, Texture.class);
         assetManager.load(GRASS_BACKGROUND, Texture.class);
+        assetManager.load(LOGO, Texture.class);
 
         assetManager.load(MUSIC_FIGHT_0, Sound.class);
         assetManager.load(MUSIC_FIGHT_1, Sound.class);
@@ -199,7 +201,7 @@ public class LoadingManager {
         processAnimation(QUEEN_IDLE, 1, 1f);
         processAnimation(KING_IDLE, 4, 0.2f);
         processAnimation(KING_WALK, 4, 0.2f);
-        processAnimation(KING_DIE, 4, 0.2f);
+        processAnimation(KING_DIE, 6, 0.3f);
         processAnimation(PAWN_IDLE_RED, 4, 0.2f);
         processAnimation(PAWN_WALK_RED, 4, 0.2f);
         processAnimation(PAWN_DIE_RED, 4, 0.1f);
@@ -215,7 +217,7 @@ public class LoadingManager {
         processAnimation(QUEEN_IDLE_RED, 1, 1f);
         processAnimation(KING_IDLE_RED, 4, 0.2f);
         processAnimation(KING_WALK_RED, 4, 0.2f);
-        processAnimation(KING_DIE_RED, 4, 0.2f);
+        processAnimation(KING_DIE_RED, 6, 0.2f);
         processAnimation(BLOOD_1, 6, 0.1f);
         processAnimation(BLOOD_2, 6, 0.1f);
         processAnimation(BLOOD_3, 6, 0.2f);
@@ -239,6 +241,7 @@ public class LoadingManager {
         processAnimation(CURSOR_ATTACK, 4, 0.1f);
         processAnimation(EXPLOSION, 8, 0.08f);
         processAnimation(GRASS_BACKGROUND, 1, 1f);
+        processAnimation(LOGO, 2, 0.8f);
     }
 
     public Animation<TextureRegion> getAnimation(String name) {
