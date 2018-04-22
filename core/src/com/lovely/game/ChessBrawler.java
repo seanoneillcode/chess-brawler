@@ -30,6 +30,7 @@ public class ChessBrawler extends ApplicationAdapter {
     EffectsManager effectsManager;
     LevelManager levelManager;
     SoundManager soundManager;
+    StoryManager storyManager;
     private float timer = 0;
     public String playerOwner = RED;
     public String aiOwner = BLUE;
@@ -40,6 +41,7 @@ public class ChessBrawler extends ApplicationAdapter {
     float screenTimer = 0;
     private boolean waitingForContinue = false;
     private float countDown = 0;
+    boolean isStoryMode = false;
 
     @Override
 	public void create () {
@@ -53,8 +55,9 @@ public class ChessBrawler extends ApplicationAdapter {
         effectsManager = new EffectsManager();
         soundManager = new SoundManager();
         levelManager = new LevelManager();
+        storyManager = new StoryManager();
         pieceOffset = new Vector2(4, 0);
-        aiPlayer = new AiPlayer(aiOwner, 2);
+        aiPlayer = new AiPlayer(aiOwner, 0);
 		batch = new SpriteBatch();
 		loadingManager.load();
 		isTesting = false;
@@ -69,12 +72,17 @@ public class ChessBrawler extends ApplicationAdapter {
         waitingForContinue = true;
         if (screen.equals(GAME_WON)) {
             String gameLoser = gameWinner.equals(RED) ? BLUE : RED;
-            effectsManager.blowUpPlayer(gameLoser, this);
+//            effectsManager.blowUpPlayer(gameLoser, this);
             String winLose = gameWinner.equals(playerOwner) ? MUSIC_WIN : MUSIC_FAIL;
             soundManager.playMusic(winLose, this, false);
             cameraManager.targetZoom = 0.6f;
             Vector2 pos = pieceManager.getKingPiece(gameLoser).pos.cpy();
             cameraManager.cameraPos = new Vector2(pos.y, pos.x);
+        }
+        if (screen.equals(GAME_STORY)) {
+            storyManager.loadCurrentStoryLevel();
+            cameraManager.targetZoom = 1f;
+            cameraManager.cameraPos = new Vector2(56, 74);
         }
         if (screen.equals(GAME_PLAYING)) {
             cameraManager.targetZoom = 1f;
@@ -83,6 +91,9 @@ public class ChessBrawler extends ApplicationAdapter {
             countDown = 2.0f;
         }
         if (screen.equals(GAME_MENU)) {
+            isStoryMode = false;
+            storyManager.storyLevel = 0;
+            cameraManager.targetZoom = 1f;
             cameraManager.cameraPos = new Vector2(56, 320);
         }
         this.screen = screen;
@@ -113,6 +124,7 @@ public class ChessBrawler extends ApplicationAdapter {
         levelManager.update();
         screenShaker.update();
         cameraManager.update(this);
+        storyManager.update(this);
         update();
         Gdx.gl.glClearColor(0f / 255f, 149f / 255f, 233f / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -125,9 +137,79 @@ public class ChessBrawler extends ApplicationAdapter {
         drawSelectionTiles();
         drawPieces();
         drawMenu();
+        drawStory();
         drawText();
         drawCursor();
         batch.end();
+    }
+
+    void update() {
+        timer += Gdx.graphics.getDeltaTime();
+        countDown -= Gdx.graphics.getDeltaTime();
+        if (screen.equals(GAME_WON)) {
+            if (waitingForContinue && inputManager.justClicked) {
+                String previousGameWinner = gameWinner;
+                changeScreen(GAME_PLAYING);
+                if (isStoryMode) {
+                    if (playerOwner.equals(previousGameWinner)) {
+                        storyManager.nextBattle(this);
+                        changeScreen(GAME_STORY);
+                    } else {
+                        changeScreen(GAME_STORY);
+                    }
+                }
+            }
+        }
+        if (screen.equals(GAME_MENU)) {
+            if (waitingForContinue && inputManager.justClicked) {
+                System.out.print(inputManager.mousePos.y);
+
+                if (inputManager.mousePos.y > 230 && inputManager.mousePos.y < 260) {
+                    changeScreen(GAME_PLAYING);
+                    isStoryMode = false;
+                    aiPlayer.aiLevel = 0;
+                }
+                if (inputManager.mousePos.y > 270 && inputManager.mousePos.y < 290) {
+                    changeScreen(GAME_PLAYING);
+                    isStoryMode = true;
+                    changeScreen(GAME_STORY);
+                    aiPlayer.aiLevel = 0;
+                }
+            }
+        }
+    }
+
+    private void drawStory() {
+        if (!screen.equals(GAME_STORY)) {
+            return;
+        }
+        Vector2 pos = cameraManager.cameraPos.cpy().add(-120, -90);
+
+        if (storyManager.isLastStory()) {
+            Gdx.gl.glClearColor(0f, 0f, 0f, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            String line = storyManager.getLine();
+            Vector2 linePos = pos.cpy().add(20, 120);
+            textManager.drawText(batch, line, linePos);
+        } else {
+            batch.draw(loadingManager.getAnimation(storyManager.leftPortrait).getKeyFrame(timer, true), pos.x, pos.y);
+            batch.draw(loadingManager.getAnimation(storyManager.rightPortrait).getKeyFrame(timer, true), pos.x + 180, pos.y);
+            String line = storyManager.getLine();
+            Vector2 linePos = pos.cpy().add(10, 160);
+            if (!storyManager.isCurrentActorLeft) {
+                linePos.x = linePos.x + 48;
+            }
+            Sprite sprite = new Sprite(loadingManager.getAnimation(SPEECH_BUBBLE).getKeyFrame(timer, true));
+            sprite.setPosition(linePos.x - 6, linePos.y - 88);
+            if (!storyManager.isCurrentActorLeft) {
+                sprite.flip(true, false);
+            }
+            if (!storyManager.isReady()) {
+                sprite.draw(batch);
+            }
+            textManager.drawText(batch, line, linePos);
+        }
+
     }
 
     private void drawMenu() {
@@ -141,20 +223,6 @@ public class ChessBrawler extends ApplicationAdapter {
         batch.draw(loadingManager.getAnimation(LOGO).getKeyFrame(timer, true), pos.x, pos.y);
     }
 
-    void update() {
-        timer += Gdx.graphics.getDeltaTime();
-        countDown -= Gdx.graphics.getDeltaTime();
-        if (screen.equals(GAME_WON)) {
-            if (waitingForContinue && inputManager.justClicked) {
-                changeScreen(GAME_PLAYING);
-            }
-        }
-        if (screen.equals(GAME_MENU)) {
-            if (waitingForContinue && inputManager.justClicked) {
-                changeScreen(GAME_PLAYING);
-            }
-        }
-    }
 
     private void drawCursor() {
         batch.draw(loadingManager.getAnimation(inputManager.cursorState.image).getKeyFrame(timer, true), inputManager.mousePos.x - 8, inputManager.mousePos.y - 8);
@@ -163,9 +231,10 @@ public class ChessBrawler extends ApplicationAdapter {
     private void drawText() {
         if (screen.equals(GAME_WON)) {
             String msg = playerOwner.equals(gameWinner) ? "YOU WIN" : "YOU LOSE";
+            String action = playerOwner.equals(gameWinner) ? "CONTINUE" : "RETRY";
 
             textManager.drawText(batch, msg, cameraManager.cameraPos.cpy().add(-24, 16), Color.WHITE);
-            textManager.drawText(batch, "RETRY?",cameraManager.cameraPos.cpy().add(-16, -16));
+            textManager.drawText(batch, action,cameraManager.cameraPos.cpy().add(-16, -16));
         }
         if (screen.equals(GAME_PLAYING)) {
             if (waitingForContinue) {
@@ -177,8 +246,8 @@ public class ChessBrawler extends ApplicationAdapter {
             }
         }
         if (screen.equals(GAME_MENU)) {
-            textManager.drawText(batch, "CLICK TO PLAY",cameraManager.cameraPos.cpy().add(-48, -36));
-            //textManager.drawText(batch, "STORY GAME",cameraManager.cameraPos.cpy().add(-48, -64));
+            textManager.drawText(batch, "STORY GAME",cameraManager.cameraPos.cpy().add(-48, -36));
+            textManager.drawText(batch, "QUICK GAME",cameraManager.cameraPos.cpy().add(-48, -64));
         }
     }
 
@@ -286,6 +355,6 @@ public class ChessBrawler extends ApplicationAdapter {
 	}
 
     public boolean isPaused() {
-        return countDown > 0;
+        return countDown > 0 || screen.equals(GAME_STORY);
     }
 }

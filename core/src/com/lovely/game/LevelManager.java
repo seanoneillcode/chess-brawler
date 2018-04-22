@@ -38,6 +38,9 @@ public class LevelManager {
     }
 
     void start() {
+        grass.clear();
+        shadowsClouds.clear();
+        clouds.clear();
         // GRASS
         // lleft
         for (int i = 0; i < 10; i++) {
@@ -57,7 +60,7 @@ public class LevelManager {
 
         // CLOUDS
         // SHADOWS
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 8; i++) {
             Vector2 pos = new Vector2(MathUtils.random(0, 300) - 120, MathUtils.random(0, 100) - 20);
             Vector2 mov = new Vector2(MathUtils.random(4.0f, 8.0f), -1f * MathUtils.random(2f));
             shadowsClouds.add(new Drawable(shadowCloudImages.get(MathUtils.random(0, shadowCloudImages.size() - 1)), pos, MathUtils.random(1.0f), mov));

@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 public class TextManager {
 
     private BitmapFont font;
+    Color dark = new Color(24f / 255f, 20f / 255f, 47 / 255f, 1f);
 
     TextManager() {
         loadFonts("bit-16.fnt");
@@ -16,7 +17,7 @@ public class TextManager {
 
     public void drawText(SpriteBatch batch, String text, Vector2 pos, Color color) {
         font.getData().setScale(1.0f);
-        font.setColor(Color.DARK_GRAY);
+        font.setColor(dark);
         font.draw(batch, text, pos.x, pos.y - 1 );
         font.setColor(color);
         font.draw(batch, text, pos.x, pos.y);

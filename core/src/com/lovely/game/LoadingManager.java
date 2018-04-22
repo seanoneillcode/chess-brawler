@@ -29,6 +29,7 @@ public class LoadingManager {
     static final String BISHOP_WALK = "bishop-walk.png";
     static final String BISHOP_DIE = "bishop-die.png";
     static final String QUEEN_IDLE = "queen-idle.png";
+    static final String QUEEN_DIE = "queen-die.png";
     static final String KING_IDLE = "king-idle.png";
     static final String KING_WALK = "king-walk.png";
     static final String KING_DIE = "king-die.png";
@@ -45,6 +46,7 @@ public class LoadingManager {
     static final String BISHOP_WALK_RED = "bishop-walk-red.png";
     static final String BISHOP_DIE_RED = "bishop-die-red.png";
     static final String QUEEN_IDLE_RED = "queen-idle-red.png";
+    static final String QUEEN_DIE_RED = "queen-die-red.png";
     static final String KING_IDLE_RED = "king-idle-red.png";
     static final String KING_WALK_RED = "king-walk-red.png";
     static final String KING_DIE_RED = "king-die-red.png";
@@ -72,6 +74,11 @@ public class LoadingManager {
     static final String CURSOR_ATTACK = "cursor-attack.png";
     static final String GRASS_BACKGROUND = "background-grass.png";
     static final String LOGO = "logo.png";
+    static final String PORTRAIT_1 = "portrait-1.png";
+    static final String PORTRAIT_2 = "portrait-2.png";
+    static final String PORTRAIT_3 = "portrait-3.png";
+    static final String PORTRAIT_4 = "portrait-4.png";
+    static final String SPEECH_BUBBLE = "speech-bubble.png";
 
     static final String MUSIC_FIGHT_0 = "sound/fight-0.ogg";
     static final String MUSIC_FIGHT_1 = "sound/fight-1.ogg";
@@ -120,6 +127,7 @@ public class LoadingManager {
         assetManager.load(BISHOP_WALK, Texture.class);
         assetManager.load(BISHOP_DIE, Texture.class);
         assetManager.load(QUEEN_IDLE, Texture.class);
+        assetManager.load(QUEEN_DIE, Texture.class);
         assetManager.load(KING_IDLE, Texture.class);
         assetManager.load(KING_WALK, Texture.class);
         assetManager.load(KING_DIE, Texture.class);
@@ -136,6 +144,7 @@ public class LoadingManager {
         assetManager.load(BISHOP_WALK_RED, Texture.class);
         assetManager.load(BISHOP_DIE_RED, Texture.class);
         assetManager.load(QUEEN_IDLE_RED, Texture.class);
+        assetManager.load(QUEEN_DIE_RED, Texture.class);
         assetManager.load(KING_IDLE_RED, Texture.class);
         assetManager.load(KING_WALK_RED, Texture.class);
         assetManager.load(KING_DIE_RED, Texture.class);
@@ -163,6 +172,11 @@ public class LoadingManager {
         assetManager.load(EXPLOSION, Texture.class);
         assetManager.load(GRASS_BACKGROUND, Texture.class);
         assetManager.load(LOGO, Texture.class);
+        assetManager.load(PORTRAIT_1, Texture.class);
+        assetManager.load(PORTRAIT_2, Texture.class);
+        assetManager.load(PORTRAIT_3, Texture.class);
+        assetManager.load(PORTRAIT_4, Texture.class);
+        assetManager.load(SPEECH_BUBBLE, Texture.class);
 
         assetManager.load(MUSIC_FIGHT_0, Sound.class);
         assetManager.load(MUSIC_FIGHT_1, Sound.class);
@@ -199,6 +213,7 @@ public class LoadingManager {
         processAnimation(BISHOP_WALK, 4, 0.2f);
         processAnimation(BISHOP_DIE, 4, 0.1f);
         processAnimation(QUEEN_IDLE, 1, 1f);
+        processAnimation(QUEEN_DIE, 4, 0.1f);
         processAnimation(KING_IDLE, 4, 0.2f);
         processAnimation(KING_WALK, 4, 0.2f);
         processAnimation(KING_DIE, 6, 0.3f);
@@ -215,6 +230,7 @@ public class LoadingManager {
         processAnimation(BISHOP_WALK_RED, 4, 0.2f);
         processAnimation(BISHOP_DIE_RED, 4, 0.1f);
         processAnimation(QUEEN_IDLE_RED, 1, 1f);
+        processAnimation(QUEEN_DIE_RED, 4, 0.1f);
         processAnimation(KING_IDLE_RED, 4, 0.2f);
         processAnimation(KING_WALK_RED, 4, 0.2f);
         processAnimation(KING_DIE_RED, 6, 0.2f);
@@ -242,6 +258,11 @@ public class LoadingManager {
         processAnimation(EXPLOSION, 8, 0.08f);
         processAnimation(GRASS_BACKGROUND, 1, 1f);
         processAnimation(LOGO, 2, 0.8f);
+        processAnimation(PORTRAIT_1, 1, 1f);
+        processAnimation(PORTRAIT_2, 1, 1f);
+        processAnimation(PORTRAIT_3, 1, 1f);
+        processAnimation(PORTRAIT_4, 1, 1f);
+        processAnimation(SPEECH_BUBBLE, 1, 1f);
     }
 
     public Animation<TextureRegion> getAnimation(String name) {

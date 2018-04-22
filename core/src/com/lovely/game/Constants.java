@@ -15,6 +15,7 @@ class Constants {
     static final String GAME_PLAYING = "playing-game";
     static final String GAME_WON = "game-won";
     static final String GAME_MENU = "game-menu";
+    static final String GAME_STORY = "game-story";
     static final float DYING_TIMER = 0.8f;
 
 }

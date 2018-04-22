@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
+import static com.lovely.game.Constants.GAME_MENU;
 import static com.lovely.game.LoadingManager.CURSOR;
 import static com.lovely.game.LoadingManager.CURSOR_ATTACK;
 import static com.lovely.game.LoadingManager.CURSOR_MOVE;
@@ -35,6 +36,9 @@ public class InputManager {
         mousePosOnBoard.y = mousePos.x;
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            context.changeScreen(GAME_MENU);
         }
         justClicked = false;
         if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {

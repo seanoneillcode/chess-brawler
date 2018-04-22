@@ -61,11 +61,13 @@ public class AiPlayer {
                 if (maxTries < 0) {
                     takenAction = true;
                 }
-                if (aiPieces.contains(king) && kingInDanger && MathUtils.random(100) > 50) {
-                    List<Move> moves = context.pieceManager.generateMoves(king);
-                    if (!moves.isEmpty()) {
-                        Move move = moves.get(MathUtils.random(0, moves.size() - 1));
-                        context.pieceManager.movePiece(king, move, context);
+                if (aiLevel > 1) {
+                    if (aiPieces.contains(king) && kingInDanger && MathUtils.random(100) > 50) {
+                        List<Move> moves = context.pieceManager.generateMoves(king);
+                        if (!moves.isEmpty()) {
+                            Move move = moves.get(MathUtils.random(0, moves.size() - 1));
+                            context.pieceManager.movePiece(king, move, context);
+                        }
                     }
                 }
                 Piece randomPiece = aiPieces.get(MathUtils.random(0, aiPieces.size() - 1));
