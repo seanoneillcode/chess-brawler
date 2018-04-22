@@ -11,17 +11,31 @@ import static com.lovely.game.Constants.*;
 public class CameraManager {
 
     OrthographicCamera camera;
-    private Vector2 cameraPos;
+    public Vector2 cameraPos;
+    float targetZoom;
+    private float zoomRate = 8.0f;
 
     public CameraManager() {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
         cameraPos = new Vector2(56, 74);
         camera.position.set(cameraPos, 0);
+        targetZoom = camera.zoom;
     }
 
     void update(ChessBrawler context) {
         camera.position.set(getCameraPosition(cameraPos, context.screenShaker.getShake()));
+        if (camera.zoom != targetZoom) {
+            if (camera.zoom < targetZoom) {
+                camera.zoom = camera.zoom + ((targetZoom - camera.zoom) / zoomRate);
+            }
+            if (camera.zoom > targetZoom) {
+                camera.zoom = camera.zoom - ((camera.zoom - targetZoom) / zoomRate);
+            }
+            if (Math.abs(targetZoom - camera.zoom) < 0.01f) {
+                camera.zoom = targetZoom;
+            }
+        }
         camera.update();
     }
 

@@ -131,6 +131,15 @@ public class PieceManager {
         });
     }
 
+    Piece getKingPiece(String owner) {
+        for (Piece piece : pieces) {
+            if (piece.owner.equals(owner) && piece.type == KING) {
+                return piece;
+            }
+        }
+        return null;
+    }
+
     private boolean canSelectPiece(Piece piece, ChessBrawler context) {
         if (!piece.owner.equals(context.playerOwner) && !context.isTesting && piece.state == Piece.State.ALIVE) {
             return false;

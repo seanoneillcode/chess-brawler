@@ -2,6 +2,7 @@ package com.lovely.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -64,10 +65,15 @@ public class ChessBrawler extends ApplicationAdapter {
 	void changeScreen(String screen) {
         waitingForContinue = true;
         if (screen.equals(GAME_WON)) {
-            effectsManager.blowUpPlayer(gameWinner.equals(RED) ? BLUE : RED, this);
+            String gameLoser = gameWinner.equals(RED) ? BLUE : RED;
+            effectsManager.blowUpPlayer(gameLoser, this);
             String winLose = gameWinner.equals(playerOwner) ? MUSIC_WIN : MUSIC_FAIL;
             soundManager.playMusic(winLose, this, false);
+            cameraManager.targetZoom = 0.4f;
+            Vector2 pos = pieceManager.getKingPiece(gameLoser).pos.cpy();
+            cameraManager.cameraPos = new Vector2(pos.y, pos.x);
         }
+
         this.screen = screen;
 
     }
@@ -116,6 +122,8 @@ public class ChessBrawler extends ApplicationAdapter {
         if (screen.equals(GAME_WON)) {
             if (waitingForContinue && inputManager.justClicked) {
                 screen = PLAYING_GAME;
+                cameraManager.targetZoom = 1f;
+                cameraManager.cameraPos = new Vector2(56, 74);
                 startGame();
             }
         }
@@ -127,9 +135,10 @@ public class ChessBrawler extends ApplicationAdapter {
 
     private void drawText() {
         if (screen.equals(GAME_WON)) {
-            String msg = playerOwner.equals(gameWinner) ? "You win!" : "You lose!";
-            textManager.drawText(batch, msg, new Vector2(40, 104));
-            textManager.drawText(batch, "(click to play again)", new Vector2(12, 68));
+            String msg = playerOwner.equals(gameWinner) ? "YOU WIN" : "YOU LOSE";
+
+            textManager.drawText(batch, msg, cameraManager.cameraPos.cpy().add(-24, 16), Color.YELLOW);
+            textManager.drawText(batch, "RETRY",cameraManager.cameraPos.cpy().add(-16, -16));
         }
         if (screen.equals(PLAYING_GAME)) {
             if (waitingForContinue) {
@@ -142,7 +151,7 @@ public class ChessBrawler extends ApplicationAdapter {
         for (Drawable drawable : levelManager.clouds) {
             batch.draw(loadingManager.getAnimation(drawable.image).getKeyFrame(drawable.animTimer, true), drawable.pos.x, drawable.pos.y);
         }
-        batch.draw(loadingManager.getAnimation(GRASS_BACKGROUND).getKeyFrame(0), -64, -16);
+        batch.draw(loadingManager.getAnimation(GRASS_BACKGROUND).getKeyFrame(0), -84, -36);
     }
 
     private void drawEffects() {

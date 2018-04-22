@@ -14,12 +14,16 @@ public class TextManager {
         loadFonts("bit-16.fnt");
     }
 
-    public void drawText(SpriteBatch batch, String text, Vector2 pos) {
+    public void drawText(SpriteBatch batch, String text, Vector2 pos, Color color) {
         font.getData().setScale(1.0f);
-        font.setColor(Color.RED);
+        font.setColor(Color.DARK_GRAY);
         font.draw(batch, text, pos.x, pos.y - 1 );
-        font.setColor(Color.GOLD);
+        font.setColor(color);
         font.draw(batch, text, pos.x, pos.y);
+    }
+
+    public void drawText(SpriteBatch batch, String text, Vector2 pos) {
+        drawText(batch, text, pos, Color.WHITE);
     }
 
     private BitmapFont loadFonts(String fontString) {
